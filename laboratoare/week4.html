@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 4 – JavaScript de bază</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html" class="active">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 4 – JavaScript de bază</h1>
+
+    <h2>1. Introducere în JavaScript</h2>
+    <p>JavaScript este un limbaj de programare care permite adăugarea de interactivitate paginilor web. Poți folosi
+        JavaScript pentru a manipula conținutul HTML, a răspunde la evenimente ale utilizatorului și a crea aplicații
+        dinamice. În această săptămână, vom acoperi conceptele de bază: variabile, funcții și manipularea DOM-ului.</p>
+
+    <h2>2. Adăugarea JavaScript în pagini HTML</h2>
+    <p>Pentru a folosi JavaScript într-o pagină HTML, poți adăuga codul în mai multe moduri. Cele mai comune sunt:
+        inline, în elementul <code>&lt;script&gt;</code>, sau într-un fișier extern.</p>
+
+    <h3>Metode de adăugare</h3>
+    <ul>
+        <li><strong>Inline:</strong> Codul JS este scris direct în atributul unui element HTML (de exemplu,
+            <code>onclick</code>).
+        </li>
+        <li><strong>În elementul &lt;script&gt;:</strong> Codul este plasat între tag-urile <code>&lt;script&gt;</code>
+            și <code>&lt;/script&gt;</code>, de obicei la sfârșitul <code>&lt;body&gt;</code>.</li>
+        <li><strong>Fișier extern:</strong> Codul este într-un fișier separat (.js) și este inclus folosind atributul
+            <code>src</code>.
+        </li>
+    </ul>
+
+    <h3>Exemple</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Exemplu JS&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;button onclick="alert('Salut!')"&gt;Click inline&lt;/button&gt;
+
+    &lt;script&gt;
+        // Cod JS în script tag
+        console.log("Acesta este JS în pagină");
+    &lt;/script&gt;
+
+    &lt;script src="script.js"&gt;&lt;/script&gt; &lt;!-- Fișier extern --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+    <p>Recomandarea este să plasezi script-urile la sfârșitul <code>&lt;body&gt;</code> pentru a nu bloca încărcarea
+        paginii.</p>
+
+    <h2>3. Variabile</h2>
+    <p>Variabilele sunt containere pentru stocarea datelor. În JavaScript, poți declara variabile folosind
+        <code>var</code>, <code>let</code> sau <code>const</code>.
+    </p>
+
+    <h3>Tipuri de variabile</h3>
+    <ul>
+        <li><code>var</code> – Declarație tradițională, dar nu este recomandată în codul modern din cauza problemelor de
+            scope.</li>
+        <li><code>let</code> – Permite reatribuirea valorii și are scope de bloc.</li>
+        <li><code>const</code> – Pentru valori constante care nu se schimbă; are scope de bloc și nu permite
+            reatribuirea.</li>
+    </ul>
+
+    <h3>Exemple</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>// Declarare cu let
+let nume = "Ana";
+nume = "Maria"; // OK, se poate schimba
+
+// Declarare cu const
+const varsta = 25;
+// varsta = 26; // Eroare: nu se poate schimba
+
+// Declarare cu var (nu recomandat)
+var oras = "București";
+oras = "Cluj"; // OK, dar scope global</code></pre>
+    </div>
+
+    <h2>4. Funcții</h2>
+    <p>Funcțiile sunt blocuri de cod reutilizabile care execută sarcini specifice. Pot primi parametri și pot returna
+        valori.</p>
+
+    <h3>Tipuri de funcții</h3>
+    <ul>
+        <li><strong>Funcții declarate:</strong> Sunt definite folosind cuvântul cheie <code>function</code>.</li>
+        <li><strong>Funcții expresie:</strong> Sunt atribuite unei variabile.</li>
+        <li><strong>Funcții săgeată (arrow functions):</strong> Sintaxă scurtă, introdusă în ES6.</li>
+    </ul>
+
+    <h3>Exemple</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>// Funcție declarată
+function salut(nume) {
+    return "Salut, " + nume + "!";
+}
+
+// Funcție expresie
+const aduna = function(a, b) {
+    return a + b;
+};
+
+// Funcție săgeată
+const inmulteste = (a, b) => a * b;
+
+// Apelarea funcțiilor
+console.log(salut("Ana")); // Salut, Ana!
+console.log(aduna(2, 3)); // 5
+console.log(inmulteste(4, 5)); // 20</code></pre>
+    </div>
+
+    <h2>5. Manipularea DOM-ului</h2>
+    <p>DOM (Document Object Model) reprezintă structura paginii HTML ca un arbore de obiecte. JavaScript poate manipula
+        DOM-ul pentru a schimba conținutul, stilurile sau structura paginii.</p>
+
+    <h3>Selectarea elementelor</h3>
+    <p>Pentru a manipula elemente, trebuie să le selectezi mai întâi.</p>
+    <ul>
+        <li><code>document.getElementById(id)</code> – Selectează un element după ID.</li>
+        <li><code>document.querySelector(selector)</code> – Selectează primul element care corespunde selectorului CSS.
+        </li>
+        <li><code>document.querySelectorAll(selector)</code> – Selectează toate elementele care corespund selectorului.
+        </li>
+    </ul>
+
+    <h3>Exemple de manipulare</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>// Selectarea unui element
+const titlu = document.querySelector('h1');
+
+// Schimbarea textului
+titlu.textContent = "Titlu nou";
+
+// Schimbarea stilului
+titlu.style.color = "red";
+
+// Adăugarea unui eveniment
+titlu.addEventListener('click', function() {
+    alert('Ai făcut click pe titlu!');
+});
+
+// Crearea și adăugarea unui element nou
+const paragrafNou = document.createElement('p');
+paragrafNou.textContent = "Acesta este un paragraf nou.";
+document.body.appendChild(paragrafNou);</code></pre>
+    </div>
+
+    <h3>Exemplu practic: Buton care schimbă culoarea fundalului</h3>
+    <p>Poți combina variabile, funcții și DOM pentru a crea interacțiuni simple.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;button id="schimbaCuloare"&gt;Schimbă culoarea&lt;/button&gt;
+
+&lt;script&gt;
+const buton = document.getElementById('schimbaCuloare');
+let culoareCurenta = 'white';
+
+buton.addEventListener('click', function() {
+    culoareCurenta = (culoareCurenta === 'white') ? 'lightblue' : 'white';
+    document.body.style.backgroundColor = culoareCurenta;
+});
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <h2>6. Evenimente și interactivitate</h2>
+    <p>Evenimentele permit paginilor să răspundă la acțiunile utilizatorilor, cum ar fi click-uri, apăsări de taste sau
+        mișcări ale mouse-ului. JavaScript folosește ascultători de evenimente (event listeners) pentru a detecta și
+        reacționa la aceste evenimente.</p>
+
+    <h3>Evenimente comune</h3>
+    <ul>
+        <li><code>click</code> – Când utilizatorul face click pe un element.</li>
+        <li><code>mouseover</code> – Când mouse-ul trece peste un element.</li>
+        <li><code>keydown</code> – Când o tastă este apăsată.</li>
+        <li><code>submit</code> – Când un formular este trimis.</li>
+        <li><code>load</code> – Când pagina s-a încărcat complet.</li>
+    </ul>
+
+    <h3>Exemple de evenimente</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>// Eveniment click
+const buton = document.querySelector('button');
+buton.addEventListener('click', function() {
+    alert('Butonul a fost apăsat!');
+});
+
+// Eveniment mouseover
+const div = document.querySelector('div');
+div.addEventListener('mouseover', function() {
+    div.style.backgroundColor = 'yellow';
+});
+
+// Eveniment keydown
+document.addEventListener('keydown', function(event) {
+    console.log('Tasta apăsată: ' + event.key);
+});
+
+// Eveniment submit pentru formular
+const form = document.querySelector('form');
+form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Previne trimiterea implicită
+    alert('Formular trimis!');
+});</code></pre>
+    </div>
+
+    <h3>Exemplu practic: Formular interactiv</h3>
+    <p>Un formular simplu care validează input-ul și afișează un mesaj.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;form id="myForm"&gt;
+    &lt;input type="text" id="nume" placeholder="Introdu numele tău"&gt;
+    &lt;button type="submit"&gt;Trimite&lt;/button&gt;
+&lt;/form&gt;
+&lt;p id="mesaj"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+const form = document.getElementById('myForm');
+const input = document.getElementById('nume');
+const mesaj = document.getElementById('mesaj');
+
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (input.value.trim() === '') {
+        mesaj.textContent = 'Te rog introdu un nume!';
+        mesaj.style.color = 'red';
+    } else {
+        mesaj.textContent = 'Salut, ' + input.value + '!';
+        mesaj.style.color = 'green';
+    }
+});
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <h2>7. Exercițiu practic</h2>
+    <ul>
+        <li>Manipulează DOM-ul pentru a schimba textul unui paragraf când faci click pe un buton.</li>
+        <li>Manipulează DOM-ul pentru a adauga in pagina ca element HTML un paragraf nou(cu textul introdus in input)
+            când faci submit pe un formular.</li>
+    </ul>
+
+    <h2>8. Resurse suplimentare</h2>
+    <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">Documentația MDN pentru
+                JavaScript</a></li>
+        <li><a href="https://www.w3schools.com/js/" target="_blank">Tutoriale W3Schools pentru JS</a></li>
+    </ul>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 1000);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

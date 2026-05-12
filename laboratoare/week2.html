@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 2 – HTML &amp; CSS (partea 1)</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html" class="active">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 2 – HTML &amp; CSS (partea 1)</h1>
+
+    <h2>Ce înseamnă structura unei pagini</h2>
+    <p>O pagină web este alcătuită din tag-uri HTML care definesc semnificaţia fiecărei secţiuni. Iată o listă de
+        elemente de bază:</p>
+    <ul>
+        <li><code>&lt;!DOCTYPE html&gt;</code> – definește versiunea HTML; spune browserului că documentul este HTML5.
+        </li>
+        <li><code>&lt;html&gt;</code> – elementul root ce înconjoară tot codul; include atributul <code>lang</code>
+            pentru limba paginii.</li>
+        <li><code>&lt;head&gt;</code> – secțiune pentru metadate (de exemplu <code>&lt;meta charset="UTF-8"&gt;</code>),
+            titlu, linkuri către fișiere CSS sau scripturi JavaScript; nu apare direct în conținutul vizibil.</li>
+        <li><code>&lt;body&gt;</code> – partea vizibilă a paginii; conține text, imagini, formulare și alte elemente pe
+            care utilizatorul le vede și interacționează cu ele.</li>
+    </ul>
+
+    <h2>Exemplu de pagină cu două coloane și meniu</h2>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Site simplu&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;Titlul site‑ului&lt;/h1&gt;
+        &lt;nav&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;a href="#"&gt;Acasă&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;Despre&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+    &lt;div class="container"&gt;
+        &lt;aside&gt;Aceasta este coloana laterală.&lt;/aside&gt;
+        &lt;main&gt;Aici stă conţinutul principal.&lt;/main&gt;
+    &lt;/div&gt;
+    &lt;footer&gt;© 2026 Exemplu&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+    </div>
+
+    <h2>Explicaţii pentru tag-urile din exemplu</h2>
+    <ul>
+        <li><code>&lt;header&gt;</code> – zona superioară a paginii, de obicei conține titluri și meniuri.</li>
+        <li><code>&lt;h1&gt;</code> – titlul principal al paginii; Este permis doar un singur <code>h1</code> pe pagină.
+        </li>
+        <li><code>&lt;nav&gt;</code> – element semantic pentru blocul de navigare.</li>
+        <li><code>&lt;ul&gt;</code> și <code>&lt;li&gt;</code> – listă neordonată și element de listă, folosite pentru
+            meniuri.</li>
+        <li><code>&lt;a href="..."&gt;</code> – link; atributul <code>href</code> indică adresa destinatară.</li>
+        <li><code>&lt;div class="container"&gt;</code> – divizare generică utilizată aici pentru a grupa coloană
+            laterală și conținutul principal.</li>
+        <li><code>&lt;aside&gt;</code> – secţiune secundară, de obicei pentru note, legături sau informaţii adiţionale.
+        </li>
+        <li><code>&lt;main&gt;</code> – conţinutul principal al paginii; nu trebuie plasat în interiorul altor elemente
+            precum <code>header</code> sau <code>footer</code>.</li>
+        <li><code>&lt;footer&gt;</code> – partea de jos a paginii, folosită pentru informaţii de subsol sau copyright.
+        </li>
+    </ul>
+
+    <h2>CSS pentru layout</h2>
+    <p>Salvează următoarele bucati de cod în fișierul <code>styles.css</code>:</p>
+
+    <h3>Baze CSS</h3>
+    <p>CSS (Cascading Style Sheets) se aplică elementelor HTML folosind <strong>selectori</strong> care identifică
+        taguri, clase sau id-uri. O regulă CSS are trei părţi principale:</p>
+    <ol>
+        <li><strong>Selector</strong> – elementul căruia i se aplică stilul (ex. <code>body</code>, <code>nav a</code>,
+            <code>.container</code>).
+        </li>
+        <li><strong>Proprietate</strong> – ce aspect vrei să modifici (ex. <code>color</code>, <code>margin</code>,
+            <code>display</code>).
+        </li>
+        <li><strong>Valoare</strong> – ce setare aplici proprietăţii (ex. <code>#333</code>, <code>1rem</code>,
+            <code>flex</code>).
+        </li>
+    </ol>
+    <p>Exemplu de sintaxă:</p>
+    <pre><code>selector {
+    proprietate: valoare;
+    /* comentariu: această linie este ignorată */
+}</code></pre>
+    <p>Comentariile în CSS sunt scrise între <code>/*</code> și <code>*/</code> şi nu influenţează stilurile.</p>
+
+    <h2>CSS pentru Începători – Ghid Esențial</h2>
+
+    <h3>1. Ce este CSS și cum funcționează</h3>
+    <ul>
+        <li>CSS (Cascading Style Sheets) este limbajul folosit pentru stilizarea paginilor HTML.</li>
+        <li>Separă conținutul (HTML) de design (culori, layout, fonturi).</li>
+        <li>Funcționează pe principiul „cascadă”: unele reguli le pot suprascrie pe altele în funcție de prioritate
+            (specificitate și ordine).</li>
+    </ul>
+    <hr>
+
+    <h3>2. Cum se adaugă CSS într-o pagină</h3>
+    <h4>Inline</h4>
+    <pre><code>&lt;p style="color: red;"&gt;Text&lt;/p&gt;</code></pre>
+    <h4>Internal</h4>
+    <pre><code>&lt;head&gt;
+  &lt;style&gt;
+    p { color: red; }
+  &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+    <h4>External (recomandat)</h4>
+    <pre><code>&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+    <hr>
+
+    <h3>3. Sintaxa de bază</h3>
+    <pre><code>selector {
+  proprietate: valoare;
+}</code></pre>
+    <p>Exemplu:</p>
+    <pre><code>p {
+  color: blue;
+  font-size: 16px;
+}</code></pre>
+    <hr>
+
+    <h3>4. Selectori</h3>
+    <ul>
+        <li>Selector de element: <code>p</code>, <code>div</code>, <code>h1</code></li>
+        <li>Selector de clasă: <code>.container</code></li>
+        <li>Selector de ID: <code>#header</code></li>
+        <li>Selectori descendenți: <code>div p</code></li>
+        <li>Selectori copil direct: <code>ul &gt; li</code></li>
+        <li>Selectori multipli: <code>h1, h2, h3</code></li>
+    </ul>
+    <hr>
+
+    <h3>5. Culori și unități de măsură</h3>
+    <h4>Culori</h4>
+    <ul>
+        <li>Nume: <code>red</code></li>
+        <li>Hex: <code>#ff0000</code></li>
+        <li>RGB: <code>rgb(255, 0, 0)</code></li>
+        <li>RGBA: <code>rgba(255, 0, 0, 0.5)</code></li>
+    </ul>
+    <h4>Unități</h4>
+    <ul>
+        <li><code>px</code> – unitate absolută, pixeli. Dimensiunea nu se schimbă indiferent de context. Folosit pentru
+            comportament fix și predictibil.</li>
+        <li><code>%</code> – procent relativ la elementul părinte. Dacă părintele are 200px lățime și copilul are 50%,
+            copilul va fi 100px. Util pentru layout responsive.</li>
+        <li><code>em</code> – relativ la dimensiunea fontului elementului curent. Dacă fontul este 16px și setezi
+            margin: 1em, va fi 16px. Dacă schimbi font-size la 20px, 1em devine 20px.</li>
+        <li><code>rem</code> – relativ la dimensiunea fontului elementului root (&lt;html&gt;). Spre deosebire de em, nu
+            depinde de font-size părintelui. Recomandată pentru layout consistent.</li>
+        <li><code>vh</code> – viewport height, procent din înălțimea ecranului. 100vh = înălțimea întregului ecran. Util
+            pentru secțiuni pe întreg ecranul.</li>
+        <li><code>vw</code> – viewport width, procent din lățimea ecranului. 100vw = lățimea întregului ecran. Util
+            pentru layout responsive pe mai multe dispozitive.</li>
+    </ul>
+    <hr>
+
+    <h3>6. Modelul Box (Box Model)</h3>
+    <p>Fiecare element HTML este o „cutie” formată din:</p>
+    <ul>
+        <li><strong>content</strong> – zona centrală unde se găsește textul, imaginile și alte conținut. Dimensiunea se
+            controlează cu proprietățile <code>width</code> și <code>height</code>.</li>
+        <li><strong>padding</strong> – spațiul interior dintre conținut și margine. Crește spațiul din interiorul
+            elementului, dar nu afectează elementele din jur. Exemplu: <code>padding: 1rem;</code>.</li>
+        <li><strong>border</strong> – linia de contur care înconjoară padding-ul. Se controlează cu proprietăți precum
+            <code>border: 2px solid #333;</code>. Are grosime, stil și culoare.
+        </li>
+        <li><strong>margin</strong> – spațiul exterior dintre element și elementele din jur. Crește distanța dintre
+            acest element și alții. Exemplu: <code>margin: 1rem;</code>.</li>
+    </ul>
+    <p>Ordinea de la centru spre exterior: <strong>content → padding → border → margin</strong></p>
+    <p>Recomandare:</p>
+    <pre><code>* {
+  box-sizing: border-box;
+}</code></pre>
+    <p>Aceasta face ca <code>width</code> și <code>height</code> să includă padding-ul și border-ul, ceea ce te ajută să
+        calculezi cu ușurință dimensiunile elementelor.</p>
+    <hr>
+
+    <h3>7. Display și poziționare</h3>
+    <h4>Display</h4>
+    <ul>
+        <li><code>block</code> – elementul ocupă toată lățimea disponibilă și forțează un rând nou. Exemplu:
+            <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>. Margin-ul și padding-ul
+            funcționează pe toate laturile.
+        </li>
+        <li><code>inline</code> – elementul ocupă doar spațiul necesar și nu forțează rând nou. Alte elemente se pot
+            alinia pe aceeași linie. Exemplu: <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>. Margin-ul vertical nu
+            funcționează.</li>
+        <li><code>inline-block</code> – combinație dintre <code>inline</code> și <code>block</code>. Elementul se
+            aliniază inline cu alții, dar proprietățile de margin și padding funcționează pe toate laturile. Util pentru
+            alinierea mai multor cutii pe o linie.</li>
+        <li><code>none</code> – elementul este complet ascuns și nu ocupă spațiu în pagină. Folosit pentru ascunderea
+            elementelor fără a le șterge din HTML.</li>
+    </ul>
+    <h4>Poziționare</h4>
+    <ul>
+        <li><code>static</code> – valoarea implicită. Elementul urmează fluxul normal al documentului. Proprietățile
+            <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code> nu au efect.
+        </li>
+        <li><code>relative</code> – elementul se poziționează relativ la poziția sa normală. Poți folosi
+            <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code> pentru a-l muta. Ocupă încă
+            spațiu în fluxul normal.
+        </li>
+        <li><code>absolute</code> – elementul se scoate din fluxul normal și se poziționează relativ la cel mai apropiat
+            element părinte care are <code>position</code> setat (nu static). Dacă nu există, se poziționează relativ la
+            ferestrele browserului. Ocupă zero spațiu în flux.</li>
+        <li><code>fixed</code> – elementul se poziționează relativ la fereastra browserului și rămâne pe același loc
+            chiar dacă faci scroll. Folosit pentru bare de navigare sau butoane floating. Se scoate din fluxul normal.
+        </li>
+        <li><code>sticky</code> – element hibrid care se comportă ca <code>static</code> până când ajunge la o anumită
+            poziție (definită cu <code>top</code>, <code>bottom</code>), după care se comportă ca <code>fixed</code>.
+            Util pentru titluri care urmăresc scrollul.</li>
+    </ul>
+    <hr>
+
+    <h3>8. Flexbox (layout modern)</h3>
+    <p>Activare:</p>
+    <pre><code>.container {
+  display: flex;
+}</code></pre>
+    <p>Proprietăți principale:</p>
+    <ul>
+        <li><code>flex-direction</code> – stabilește direcția elementelor (row, column).</li>
+        <li><code>justify-content</code> – aliniază elementele pe axa principală (orizontal implicit).</li>
+        <li><code>align-items</code> – aliniază elementele pe axa secundară (vertical implicit).</li>
+        <li><code>align-content</code> – aliniază liniile când există mai multe rânduri.</li>
+        <li><code>flex-wrap</code> – permite elementelor să treacă pe rând nou.</li>
+        <li><code>gap</code> – spațiu între elemente.</li>
+        <li><code>flex-grow</code> – permite unui element să ocupe spațiu suplimentar.</li>
+        <li><code>flex-shrink</code> – permite micșorarea unui element dacă e nevoie.</li>
+        <li><code>flex-basis</code> – dimensiunea inițială a unui element.</li>
+    </ul>
+    <hr>
+
+    <h3>9. Grid (layout complex)</h3>
+    <p>Activare:</p>
+    <pre><code>.container {
+  display: grid;
+}</code></pre>
+    <p>Proprietăți principale:</p>
+    <ul>
+        <li><code>grid-template-columns</code> – definește numărul și dimensiunea coloanelor.</li>
+        <li><code>grid-template-rows</code> – definește numărul și dimensiunea rândurilor.</li>
+        <li><code>gap</code> – spațiu între rânduri și coloane.</li>
+        <li><code>grid-column</code> – stabilește pe ce coloane se întinde un element.</li>
+        <li><code>grid-row</code> – stabilește pe ce rânduri se întinde un element.</li>
+        <li><code>grid-area</code> – definește poziția unui element într-o zonă.</li>
+        <li><code>justify-items</code> – aliniază elementele pe orizontală în celule.</li>
+        <li><code>align-items</code> – aliniază elementele pe verticală în celule.</li>
+        <li><code>place-items</code> – combină <code>justify-items</code> și <code>align-items</code>.</li>
+    </ul>
+
+    <h3>10. Specificitate și Cascadă</h3>
+    <p>Ordinea priorității:</p>
+    <ol>
+        <li>Inline style</li>
+        <li>ID</li>
+        <li>Clasă</li>
+        <li>Element</li>
+    </ol>
+    <p>Contează și ordinea regulilor în fișier.</p>
+    <p>Evita folosirea excesivă a <code>!important</code>.</p>
+    <hr>
+
+    <h3>11. Pseudo-clase și pseudo-elemente</h3>
+    <p>Pseudo-clase:</p>
+    <ul>
+        <li><code>:hover</code></li>
+        <li><code>:focus</code></li>
+        <li><code>:active</code></li>
+        <li><code>:nth-child()</code></li>
+    </ul>
+    <hr>
+
+    <h3>12. Responsive Design</h3>
+    <p>Principii:</p>
+    <ul>
+        <li>Mobile-first</li>
+        <li>Layout flexibil (Flexbox / Grid)</li>
+        <li>Unități relative (<code>%</code>, <code>rem</code>, <code>vh</code>, <code>vw</code>)</li>
+    </ul>
+    <hr>
+
+    <h3>13. Fonturi și text</h3>
+    <p>Proprietăți:</p>
+    <ul>
+        <li><code>font-family</code></li>
+        <li><code>font-size</code></li>
+        <li><code>font-weight</code></li>
+        <li><code>line-height</code></li>
+        <li><code>text-align</code></li>
+        <li><code>text-decoration</code></li>
+    </ul>
+    <p>Poți importa fonturi din Google Fonts:</p>
+    <pre><code>&lt;link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"&gt;</code></pre>
+    <hr>
+
+    <h3>14. Practici bune</h3>
+    <ul>
+        <li>Folosește clase în loc de ID pentru stilizare.</li>
+        <li>Evită <code>!important</code>.</li>
+        <li>Structurează codul clar și logic.</li>
+        <li>Grupează proprietățile similare.</li>
+        <li>Comentează codul.</li>
+        <li>Folosește denumiri clare pentru clase (ex: <code>card</code>, <code>nav-item</code>).</li>
+        <li>Menține consistența în indentare.</li>
+        <li>Testează în mai multe browsere.</li>
+        <li>Folosește <code>box-sizing: border-box;</code> global.</li>
+    </ul>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>/* reset minimal */
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+}
+header, footer {
+    background: #333;
+    color: #fff;
+    padding: 1rem;
+}
+nav ul {
+    list-style: none;
+    display: flex;
+}
+nav li {
+    margin-right: 1rem;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+.container {
+    display: flex;
+    margin-top: 1rem;
+}
+aside {
+    width: 25%;
+    background: #f4f4f4;
+    padding: 1rem;
+}
+main {
+    width: 75%;
+    padding: 1rem;
+}
+</code></pre>
+    </div>
+
+    <p>Despre fiecare stil:</p>
+    <ul>
+        <li><code>display: flex;</code> pe container permite poziţionarea pe orizontală.</li>
+        <li>Setările de lățime pentru <code>aside</code> și <code>main</code> definesc proporţiile.</li>
+    </ul>
+
+    <h2>Editorul și verificarea codului</h2>
+    <p>Folosește Live Server pentru a vedea imediat modificările. Deschide meniul de dezvoltare în browser (F12) pentru
+        a inspecta elementele și a experimenta cu stilurile CSS din loc.</p>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 1000);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

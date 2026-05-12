@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://teoflr.github.io/web-2026/week8.html -->
+<html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Săptămâna 8 – Aprofundare PHP: Exemple reale și bune practici</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul,
+        ol {
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #e1e4e8;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+        }
+
+        .copy-btn:hover {
+            background: #d0d7de;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+
+        .tip {
+            background: #e6ffed;
+            border-left: 4px solid #2cbe4e;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning {
+            background: #fff5b1;
+            border-left: 4px solid #e36209;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .func-def {
+            background: #f1f8ff;
+            border-left: 4px solid #0366d6;
+            padding: 0.5rem 1rem;
+            margin: 0.75rem 0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .func-def strong {
+            color: #0366d6;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #d0d7de;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        th {
+            background: #f6f8fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="https://teoflr.github.io/web-2026/index.html">Cuprins</a>
+        <a href="https://teoflr.github.io/web-2026/week1.html">Săptămâna 1</a>
+        <a href="https://teoflr.github.io/web-2026/week2.html">Săptămâna 2</a>
+        <a href="https://teoflr.github.io/web-2026/week3.html">Săptămâna 3</a>
+        <a href="https://teoflr.github.io/web-2026/week4.html">Săptămâna 4</a>
+        <a href="https://teoflr.github.io/web-2026/week5.html">Săptămâna 5</a>
+        <a href="https://teoflr.github.io/web-2026/week6.html">Săptămâna 6</a>
+        <a href="https://teoflr.github.io/web-2026/week7.html">Săptămâna 7</a>
+        <a href="https://teoflr.github.io/web-2026/week8.html" class="active">Săptămâna 8</a>
+        <a href="https://teoflr.github.io/web-2026/week9.html">Săptămâna 9</a>
+        <!-- <a href="week10.html">Săptămâna 10</a> -->
+    </nav>
+
+    <h1>Laborator 8 – Aprofundare PHP: Cazuri reale, gestionare erori, securitate</h1>
+    <h2>1. Validarea datelor din formulare</h2>
+    <p>Orice aplicatie web primeste date de la utilizator. Acestea trebuie validate atat pe client (JavaScript,
+        optional) cat si pe server (obligatoriu). Reguli comune: campuri obligatorii, format email, lungime minima,
+        numere in interval.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nume = trim($_POST['nume'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $varsta = $_POST['varsta'] ?? '';
+    
+    if (strlen($nume) &lt; 3) {
+        $errors[] = 'Numele trebuie sa aiba minim 3 caractere.';
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Adresa de email invalida.';
+    }
+    if (!is_numeric($varsta) || $varsta &lt; 18 || $varsta &gt; 120) {
+        $errors[] = 'Varsta trebuie sa fie intre 18 si 120 ani.';
+    }
+    
+    if (empty($errors)) {
+        // procesare date curare
+        echo 'Date valide. Continuam.';
+    }
+}
+?&gt;</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii noi:</strong><br>
+        - <code>trim()</code> – elimina spatiile albe (sau alte caractere) de la inceputul si sfarsitul unui string.<br>
+        - <code>filter_var()</code> – filtreaza o variabila cu un filtru specificat; returneaza valoarea filtrata sau
+        false.<br>
+        - <code>FILTER_VALIDATE_EMAIL</code> – constanta folosita ca filtru pentru a verifica daca un string este o
+        adresa de email valida.<br>
+        - <code>is_numeric()</code> – verifica daca o variabila este un numar sau un string numeric.
+    </div>
+
+    <h2>2. Upload de fisier sigur</h2>
+    <p>Incarcarea de imagini sau documente necesita restrictii de tip, dimensiune si stocare in folder protejat.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+$target_dir = "uploads/";
+$target_file = $target_dir . basename($_FILES["file"]["name"]);
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+$maxSize = 2 * 1024 * 1024; // 2MB
+$allowed = ['jpg', 'png', 'jpeg', 'gif'];
+
+if (isset($_POST["submit"])) {
+    if (!in_array($imageFileType, $allowed)) {
+        echo "Doar imagini JPG, PNG, JPEG, GIF sunt permise.";
+    } elseif ($_FILES["file"]["size"] &gt; $maxSize) {
+        echo "Fisierul este prea mare (max 2MB).";
+    } elseif (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+        echo "Fisier incarcat cu succes: " . htmlspecialchars(basename($_FILES["file"]["name"]));
+    } else {
+        echo "Eroare la upload.";
+    }
+}
+?&gt;</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii noi:</strong><br>
+        - <code>$_FILES</code> – variabila superglobala care contine informatii despre fisierele incarcate printr-un
+        formular cu metoda POST (nume, tip, dimensiune, locatie temporara etc.).<br>
+        - <code>basename()</code> – returneaza numele ultimei componente dintr-o cale (de ex. din "uploads/poza.jpg"
+        returneaza "poza.jpg").<br>
+        - <code>pathinfo()</code> – returneaza informatii despre o cale: director, nume de baza, extensie. Folosim
+        <code>PATHINFO_EXTENSION</code> pentru a obtine extensia.<br>
+        - <code>move_uploaded_file()</code> – muta un fisier incarcat din locatia temporara
+        ($_FILES["file"]["tmp_name"]) in destinatia finala. Este o masura de securitate.<br>
+        - <code>htmlspecialchars()</code> – converteste caracterele speciale ( &lt;,&gt;, ", ' ) in entitati HTML, prevenind
+            XSS.
+    </div>
+    <div class="warning">Nu stoca niciodata fisierele intr-un director accesibil direct din browser daca contin date
+        sensibile. Redenumeste fisierul (de ex. cu uniqid()) pentru a evita suprascrierea si atacurile de tip path
+        traversal.</div>
+
+    <h2>3. Gestionarea sesiunilor pentru utilizatori autentificati</h2>
+    <p>Sesiunile mentin starea utilizatorului dupa login. Exemplu simplu: login cu nume si parola hardcodata, apoi acces
+        la date personale.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>// login.php
+session_start();
+if ($_POST['username'] === 'admin' &amp;&amp; password_verify($_POST['password'], '$2y$10$...')) {
+    $_SESSION['user_id'] = 1;
+    $_SESSION['username'] = 'admin';
+    header('Location: dashboard.php');
+    exit;
+}
+
+// dashboard.php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+echo 'Bine ai venit, ' . htmlspecialchars($_SESSION['username']);</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii noi:</strong><br>
+        - <code>session_start()</code> – porneste sau reia o sesiune existenta. Trebuie apelata inainte de orice output
+        HTML.<br>
+        - <code>$_SESSION</code> – variabila superglobala care stocheaza datele sesiunii sub forma unui array.<br>
+        - <code>password_verify()</code> – verifica daca o parola in text clar corespunde cu un hash creat de
+        password_hash(). Returneaza true sau false.<br>
+        - <code>header()</code> – trimite un antet HTTP brut (folosit aici pentru redirectare).<br>
+        - <code>exit</code> – opreste executia scriptului (recomandat dupa redirect).
+    </div>
+    <p>Pentru logout: <code>session_destroy();</code> si eliminare cookie de sesiune.</p>
+    <div class="func-def">
+        <strong>Functii suplimentare pentru sesiuni:</strong><br>
+        - <code>session_destroy()</code> – distruge toate datele asociate sesiunii curente (dar nu sterge cookie-ul de
+        sesiune).<br>
+        - <code>unset($_SESSION['variabila'])</code> – sterge o singura variabila de sesiune.
+    </div>
+
+    <h2>4. Prevenirea SQL Injection si XSS</h2>
+    <p>Atacurile SQL injection exploateaza concatenarea directa a datelor in query-uri. Solutia: prepared statements
+        (PDO sau MySQLi).</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>// MySQLi cu prepared statement
+$stmt = $conn-&gt;prepare("SELECT * FROM users WHERE email = ?");
+$stmt-&gt;bind_param("s", $email);
+$stmt-&gt;execute();
+$result = $stmt-&gt;get_result();
+
+// XSS (Cross-site scripting) – se previne cu htmlspecialchars()
+echo htmlspecialchars($user_input, ENT_QUOTES, 'UTF-8');</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii si metode noi (MySQLi obiect):</strong><br>
+        - <code>prepare()</code> – pregateste o declaratie SQL pentru executie, returnand un obiect mysqli_stmt.<br>
+        - <code>bind_param()</code> – leaga variabilele la parametrii locului (?) din interogare. Primul argument
+        specifica tipurile: "s" pentru string, "i" pentru integer, "d" double, "b" blob.<br>
+        - <code>execute()</code> – executa interogarea pregatita.<br>
+        - <code>get_result()</code> – obtine un obiect mysqli_result din interogarea executata (pentru SELECT).<br>
+        - <code>htmlspecialchars()</code> – deja explicata la upload.
+    </div>
+
+    <h2>5. Tratarea erorilor si debugging</h2>
+    <p>In dezvoltare, afisam erorile; in productie, le logam fara a le afisa utilizatorului.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>// in development
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// in productie
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_log("Eroare detalii...", 3, "/path/to/error.log");
+
+// functii utile: var_dump(), print_r() pentru inspectie</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii noi:</strong><br>
+        - <code>ini_set()</code> – seteaza valoarea unei optiuni de configurare PHP in timpul executiei.<br>
+        - <code>error_reporting()</code> – seteaza nivelul de raportare a erorilor (E_ALL raporteaza toate erorile).<br>
+        - <code>error_log()</code> – trimite un mesaj de eroare catre jurnalul definit (fisier, syslog etc.). <br>
+        - <code>var_dump()</code> – afiseaza informatii detaliate despre una sau mai multe variabile (tip si valoare).
+        <br>
+        - <code>print_r()</code> – afiseaza informatie lizibila despre o variabila (util pentru array-uri).
+    </div>
+
+    <h2>6. Exemplu real: formular de contact cu stocare in fisier CSV</h2>
+    <p>Simulam o cerere de suport client. Se valideaza, se salveaza intr-un fisier CSV si se trimite un email (cu mail()
+        simplu).</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+if ($_POST) {
+    $nume = htmlspecialchars($_POST['nume']);
+    $mesaj = htmlspecialchars($_POST['mesaj']);
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die('Email invalid');
+    }
+    $linie = [$nume, $email, $mesaj, date('Y-m-d H:i:s')];
+    $handle = fopen('contacte.csv', 'a');
+    fputcsv($handle, $linie);
+    fclose($handle);
+    
+    mail($email, "Confirmare primire", "Am primit mesajul tau. Iti vom raspunde in 24h.");
+    echo "Mesaj trimis cu succes.";
+}
+?&gt;
+&lt;form method="post"&gt;
+    Nume: &lt;input type="text" name="nume" required&gt;
+    Email: &lt;input type="email" name="email" required&gt;
+    Mesaj: &lt;textarea name="mesaj"&gt;&lt;/textarea&gt;
+    &lt;button type="submit"&gt;Trimite&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+    <div class="func-def">
+        <strong>Functii noi:</strong><br>
+        - <code>fopen()</code> – deschide un fisier sau o adresa URL. Modul 'a' (append) deschide fisierul pentru
+        scriere, creandu-l daca nu exista, si plaseaza cursorul la sfarsit.<br>
+        - <code>fputcsv()</code> – scrie o linie sub forma CSV intr-un fisier deschis.<br>
+        - <code>fclose()</code> – inchide un fisier deschis anterior cu fopen().<br>
+        - <code>mail()</code> – trimite un email (necesita configuratia SMTP in php.ini).<br>
+        - <code>die()</code> – opreste executia scriptului si afiseaza un mesaj.
+    </div>
+
+    <h2>7. Bune practici in PHP</h2>
+    <ul>
+        <li>Foloseste nume sugestive pentru variabile si functii (ex. $userEmail, nu $a).</li>
+        <li>Separă logica de prezentare (nu amesteca HTML si PHP in exces; foloseste template-uri sau MVC
+            ~Model-View-Controller~).</li>
+        <li>Nu folosi functii deprecated (ex. mysql_*). Foloseste MySQLi sau PDO.</li>
+        <li>Activeaza error reporting in dezvoltare, dezactiveaza-l in productie.</li>
+        <li>Valideaza totdeauna input-urile si escape output-ul (htmlspecialchars).</li>
+        <li>Foloseste hash pentru parole (password_hash, password_verify).</li>
+    </ul>
+    <div class="func-def">
+        <strong>Functii utile pentru parole:</strong><br>
+        - <code>password_hash($parola, PASSWORD_DEFAULT)</code> – creeaza un hash securizat al parolei.<br>
+        - <code>password_verify($parola, $hash)</code> – verifica parola fata de hash.
+    </div>
+
+    <h2>8. Exercitii pentru laborator</h2>
+    <ol>
+        <li>Modifica exemplul cu upload astfel incat fisierul incarcat sa primeasca un nume unic (de ex. uniqid() . '.'
+            . extensie).</li>
+        <li>Creeaza un script care citeste fisierul contacte.csv si afiseaza toate mesajele intr-un tabel HTML.</li>
+        <li>Implementeaza un sistem simplu de login cu 2 utilizatori stocati intr-un array asociativ (username =&gt;
+            parola_hash). Foloseste password_hash('parola123', PASSWORD_DEFAULT) pentru a genera hash-ul.</li>
+        <li>Adauga un mecanism de logout si protejeaza o pagina "profil.php".</li>
+    </ol>
+    <div class="func-def">
+        <strong>Functie noua folosita in exercitiul 1:</strong><br>
+        - <code>uniqid()</code> – genereaza un identificator unic bazat pe timestamp. Exemplu: uniqid() returneaza un
+        string ca "5f8d7a9c1b3e4".
+    </div>
+
+    <script>
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    btn.textContent = 'Copiat!';
+                    setTimeout(() => { btn.textContent = 'Copiază'; }, 1500);
+                });
+            });
+        });
+    </script>
+
+
+
+</body></html>

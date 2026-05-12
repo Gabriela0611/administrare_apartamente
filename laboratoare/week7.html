@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 7 – Introducere în PHP</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html" class="active">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 7 – Introducere în PHP</h1>
+    <p>PHP (Hypertext Preprocessor) este un limbaj de scripting folosit pe partea de server pentru a crea pagini web dinamice. În această săptămână vom învăța elementele fundamentale: variabile, tipuri de date, operatori, structuri de control și funcții simple. Toate exemplele rulează într-un mediu XAMPP (Apache + PHP).</p>
+
+    <h2>1. Cum funcționează PHP?</h2>
+    <p>Spre deosebire de HTML (care este client-side), codul PHP este executat pe server. Serverul procesează scriptul PHP și trimite în browser doar rezultatul (de obicei HTML). Astfel, utilizatorul nu vede niciodată codul PHP sursă.</p>
+    <ul>
+        <li>Fișierele PHP au extensia <code>.php</code> (de exemplu <code>index.php</code>).</li>
+        <li>Codul PHP se scrie între etichetele <code>&lt;?php</code> și <code>?&gt;</code>.</li>
+        <li>PHP poate fi amestecat cu HTML în același fișier.</li>
+    </ul>
+    <div class="tip">
+        <strong>Verificare instalare PHP:</strong> Creează un fișier <code>info.php</code> în <code>htdocs</code> cu conținutul <code>&lt;?php phpinfo(); ?&gt;</code>. Accesează <code>http://localhost/info.php</code> – vei vedea o pagină cu detalii despre configurația PHP.
+    </div>
+
+    <h2>2. Primul script PHP</h2>
+    <p>În folderul <code>htdocs</code> (sau într-un subfolder al proiectului) creează fișierul <code>hello.php</code>:</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Primul script PHP&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;?php
+        echo "&lt;h1&gt;Bun venit în lumea PHP!&lt;/h1&gt;";
+        echo "&lt;p&gt;Astăzi este: " . date("d-m-Y") . "&lt;/p&gt;";
+    ?&gt;
+    &lt;p&gt;Acest paragraf este HTML pur.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+    <p>Accesează <code>http://localhost/hello.php</code>. PHP va executa comenzile <code>echo</code> și va afișa titlul și data curentă. Observă cum poți combina HTML static cu cod dinamic.</p>
+
+    <h3>Explicații:</h3>
+    <ul>
+        <li><code>&lt;?php ... ?&gt;</code> – delimitează codul PHP.</li>
+        <li><code>echo</code> – construcție care afișează text în pagina finală (similar cu print).</li>
+        <li><code>date("d-m-Y")</code> – funcție predefinită care returnează data curentă în formatul specificat (zi-lună-an).</li>
+        <li>Punctul <code>.</code> – operator de concatenare (lipire) pentru șiruri de caractere.</li>
+    </ul>
+
+    <h2>3. Variabile și tipuri de date</h2>
+    <p>În PHP, variabilele încep cu semnul <code>$</code> urmat de nume. Numele sunt case-sensitive (<code>$nume</code> ≠ <code>$Nume</code>). Nu este necesar să specifici tipul – PHP face automat conversia (limbaj tipizat dinamic).</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    // String (șir de caractere)
+    $nume = "Ana";
+    $mesaj = 'Bună ziua!';
+    
+    // Integer (număr întreg)
+    $varsta = 25;
+    
+    // Float (număr cu virgulă)
+    $pret = 49.99;
+    
+    // Boolean (adevărat/fals)
+    $student = true;
+    
+    // Afișare cu variabile
+    echo "Nume: $nume &lt;br&gt;";
+    echo 'Varsta: ' . $varsta . ' ani&lt;br&gt;';
+    echo "Pret: {$pret} lei";
+?&gt;</code></pre>
+    </div>
+    <div class="tip">
+        <strong>Diferența dintre ghilimelele simple și duble:</strong> În șirurile cu ghilimele duble (<code>" "</code>), variabilele sunt interpretate. În șirurile cu ghilimele simple (<code>' '</code>), ele sunt afișate literal. De exemplu, <code>"$nume"</code> va afișa "Ana", pe când <code>'$nume'</code> va afișa "$nume".
+    </div>
+
+    <h3>Constante</h3>
+    <p>Constantele sunt valori care nu se schimbă pe parcursul scriptului. Se definesc cu <code>define()</code> sau cu cuvântul cheie <code>const</code>.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    define("SITE_NAME", "Curs PHP");
+    const AN_CURENT = 2026;
+    echo SITE_NAME . " - " . AN_CURENT;
+?&gt;</code></pre>
+    </div>
+
+    <h2>4. Operatorii de bază</h2>
+    <ul>
+        <li><strong>Aritmetici:</strong> <code>+</code> (adunare), <code>-</code> (scădere), <code>*</code> (înmulțire), <code>/</code> (împărțire), <code>%</code> (modul – restul împărțirii).</li>
+        <li><strong>Atribuire:</strong> <code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>.</li>
+        <li><strong>Comparare:</strong> <code>==</code> (egal ca valoare), <code>===</code> (egal ca valoare și tip), <code>!=</code>, <code>&lt;&gt;</code>, <code>!==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.</li>
+        <li><strong>Logici:</strong> <code>&amp;&amp;</code> (și), <code>||</code> (sau), <code>!</code> (non).</li>
+    </ul>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    $a = 10;
+    $b = 3;
+    $suma = $a + $b;      // 13
+    $produs = $a * $b;    // 30
+    $rest = $a % $b;      // 1
+    
+    $x = 5;
+    $x += 2;              // $x devine 7
+    
+    $evaluare = ($a > $b) &amp;&amp; ($suma == 13); // true
+    echo "Suma este $suma, rest: $rest";
+?&gt;</code></pre>
+    </div>
+
+    <h2>5. Structuri de control</h2>
+    <p>Structurile de control decid fluxul execuției programului în funcție de condiții sau repetă operații.</p>
+
+    <h3>5.1. if, elseif, else</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    $nota = 85;
+    if ($nota >= 90) {
+        echo "Excelent!";
+    } elseif ($nota >= 70) {
+        echo "Foarte bine!";
+    } elseif ($nota >= 50) {
+        echo "Suficient.";
+    } else {
+        echo "Mai multă muncă!";
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h3>5.2. switch</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    $zi = "marți";
+    switch ($zi) {
+        case "luni":
+            echo "Început de săptămână";
+            break;
+        case "marți":
+            echo "A doua zi";
+            break;
+        default:
+            echo "Altă zi";
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h3>5.3. Bucle</h3>
+    <ul>
+        <li><code>for</code> – când știi de câte ori se repetă.</li>
+        <li><code>while</code> – cât timp o condiție este adevărată.</li>
+        <li><code>foreach</code> – pentru a itera prin array-uri.</li>
+    </ul>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    // for
+    for ($i = 1; $i <= 5; $i++) {
+        echo "Numărul $i &lt;br&gt;";
+    }
+    
+    // while
+    $contor = 0;
+    while ($contor < 3) {
+        echo "while: $contor &lt;br&gt;";
+        $contor++;
+    }
+    
+    // foreach cu array simplu
+    $fructe = ["Măr", "Pară", "Prună"];
+    foreach ($fructe as $fruct) {
+        echo "Fruct: $fruct &lt;br&gt;";
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h2>6. Array-uri în PHP</h2>
+    <p>Array-urile sunt structuri de date care pot stoca mai multe valori. PHP suportă array-uri indexate numeric, asociative (cu chei personalizate) și multidimensionale.</p>
+    
+    <h3>Array indexat numeric</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    $culori = ["roșu", "verde", "albastru"];
+    // sau $culori = array("roșu", "verde", "albastru");
+    echo $culori[0]; // afișează "roșu"
+    $culori[] = "galben"; // adaugă un element la final
+?&gt;</code></pre>
+    </div>
+
+    <h3>Array asociativ</h3>
+    <p>Folosește chei text pentru a face codul mai expresiv.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    $student = [
+        "nume" => "Alex Popescu",
+        "varsta" => 22,
+        "specializare" => "Informatică"
+    ];
+    echo $student["nume"]; // Alex Popescu
+    
+    // Parcurgere array asociativ
+    foreach ($student as $cheie => $valoare) {
+        echo "$cheie: $valoare &lt;br&gt;";
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h3>Funcții utile pentru array-uri</h3>
+    <ul>
+        <li><code>count($array)</code> – numărul de elemente.</li>
+        <li><code>array_push($array, $val)</code> – adaugă un element la sfârșit.</li>
+        <li><code>array_pop($array)</code> – elimină ultimul element.</li>
+        <li><code>in_array($val, $array)</code> – verifică dacă valoarea există.</li>
+        <li><code>sort($array)</code> – sortează crescător.</li>
+    </ul>
+
+    <h2>7. Funcții definite de utilizator</h2>
+    <p>Funcțiile ajută la organizarea codului și la reutilizarea logicii. Se definesc cu cuvântul cheie <code>function</code>.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    // Funcție simplă fără parametri
+    function salut() {
+        echo "Salutare din funcție!&lt;br&gt;";
+    }
+    salut();
+    
+    // Funcție cu parametri și return
+    function aduna($x, $y) {
+        return $x + $y;
+    }
+    $rezultat = aduna(12, 8); // 20
+    echo "Suma este: $rezultat &lt;br&gt;";
+    
+    // Funcție cu valoare implicită
+    function mesajBunVenit($nume = "vizitator") {
+        return "Bine ai venit, $nume!";
+    }
+    echo mesajBunVenit("Elena"); // Bine ai venit, Elena!
+    echo mesajBunVenit();        // Bine ai venit, vizitator!
+?&gt;</code></pre>
+    </div>
+    <div class="tip">
+        <strong>Return vs echo:</strong> O funcție care folosește <code>return</code> returnează o valoare, dar nu o afișează imediat. Valoarea poate fi stocată într-o variabilă sau afișată ulterior. <code>echo</code> în interiorul funcției trimite direct output-ul către browser.
+    </div>
+
+    <h2>8. Superglobalele și date din formular</h2>
+    <p>PHP are variabile predefinite (superglobale) accesibile oriunde în script: <code>$_GET</code>, <code>$_POST</code>, <code>$_SERVER</code>, <code>$_SESSION</code> etc. Ele sunt folosite pentru a primi date de la utilizator sau informații despre server.</p>
+
+    <h3>Definiții și mod de utilizare pentru fiecare superglobală</h3>
+
+    <h4>1. $_GET</h4>
+    <p><strong>Definiție:</strong> Array asociativ care conține parametrii transmisi prin URL (în string-ul de interogare). Se vede în URL ca <code>?param1=valoare1&amp;param2=valoare2</code>.</p>
+    <p><strong>Caracteristici:</strong> Date vizibile în URL, limitate ca mărime (~2KB), mai puțin sigure. Ideal pentru filtrare, paginare sau parametri simpli.</p>
+    <h3>Exemplu: procesare simplă cu GET</h3>
+    <p>Creează două fișiere: <code>formular.html</code> și <code>procesare.php</code>.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;!-- formular.html --&gt;
+&lt;form action="procesare.php" method="get"&gt;
+    &lt;label&gt;Numele tău: &lt;/label&gt;
+    &lt;input type="text" name="nume_utilizator"&gt;
+    &lt;button type="submit"&gt;Trimite&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php // procesare.php
+    if (if($_GET['nume_utilizator'])) {  // Verificăm dacă există parametrul în URL - se poate si cu metoda isset($_GET['nume_utilizator'])
+        $nume = htmlspecialchars($_GET['nume_utilizator']);
+        echo "&lt;h2&gt;Bună, $nume!&lt;/h2&gt;";
+    } else {
+        echo "&lt;p&gt;Niciun nume primit.&lt;/p&gt;";
+    }
+?&gt;</code></pre>
+    </div>
+    <div class="warning">
+        <strong>Securitate:</strong> Funcția <code>htmlspecialchars()</code> previne atacurile XSS (Cross‑Site Scripting) convertind caracterele speciale (&lt;, &gt;, ", ') în entități HTML. Folosește‑o întotdeauna când afișezi date primite de la utilizator.
+    </div>
+
+    <h4>2. $_POST</h4>
+    <p><strong>Definiție:</strong> Array asociativ care conține datele trimise prin metoda POST din formulare. Datele nu apar în URL, ci în body-ul cererii HTTP.</p>
+    <p><strong>Caracteristici:</strong> Date ascunse, suportă fișiere și date mari, mai sigură decât GET. Ideală pentru formularele de login, înregistrare sau trimitere de date sensibile.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    // Din formular: &lt;form method="POST"&gt;
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $parola = isset($_POST['parola']) ? $_POST['parola'] : '';
+        $email = isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '';
+        if (!empty($email) &amp;&amp; !empty($parola)) {
+            echo "Login incercat cu: $email";
+        }
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h4>3. $_SERVER</h4>
+    <p><strong>Definiție:</strong> Array asociativ care conține informații despre server și cererea HTTP actuală: adresa IP a clientului, metoda cererii (GET/POST), URL-ul paginii, header-e HTTP, etc.</p>
+    <p><strong>Caracteristici:</strong> Doar citire (setată de server), conține metadate. Util pentru verificări de securitate și logging.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    echo "Metoda cererii: " . $_SERVER['REQUEST_METHOD'] . "&lt;br&gt;";
+    echo "IP client: " . $_SERVER['REMOTE_ADDR'] . "&lt;br&gt;";
+    echo "URL pagina: " . $_SERVER['PHP_SELF'] . "&lt;br&gt;";
+    echo "Server: " . $_SERVER['SERVER_NAME'] . "&lt;br&gt;";
+    echo "User-Agent: " . $_SERVER['HTTP_USER_AGENT'] . "&lt;br&gt;";
+    
+    // Verificare metoda POST
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        echo "Formular trimis prin POST";
+    }
+?&gt;</code></pre>
+    </div>
+
+    <h4>4. $_SESSION</h4>
+    <p><strong>Definiție:</strong> Array asociativ care stochează date persistent pentru un utilizator pe parcursul unor multiple cereri. Datele rămân în memorie pe server până când sesiunea se termină.</p>
+    <p><strong>Caracteristici:</strong> Necesită <code>session_start()</code>, datele nu se trimit la client, sigure pentru informații sensibile (ID utilizator, preferințe). Fiecare vizitator are propria sesiune.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copiază</button>
+        <pre><code>&lt;?php
+    session_start(); // Trebuie apelat la INCEPUTUL fișierului, înainte de orice output
+    
+    // Stocheaza date in sesiune dupa login
+    $_SESSION['user_id'] = 123;
+    $_SESSION['username'] = 'alexandra';
+    $_SESSION['logged_in'] = true;
+    
+    // Pe alte pagini, retrieve datele
+    if (isset($_SESSION['logged_in']) &amp;&amp; $_SESSION['logged_in']) {
+        echo "Bine ai venit, " . $_SESSION['username'];
+    } else {
+        echo "Va rugam sa va autentificati";
+    }
+    
+    // Logout - sterge sesiunea
+    // session_destroy();
+?&gt;</code></pre>
+    </div>
+
+    <h2>9. Exerciții practice</h2>
+    <p>Pentru a fixa cunoștințele, încearcă să rezolvi următoarele exerciții:</p>
+    <ol>
+        <li><strong>Calculator simplu:</strong> Creează un script PHP care primește două numere și un operator (+, -, *, /) prin metoda GET și afișează rezultatul. Tratează cazul împărțirii la zero.</li>
+        <li><strong>Listă de sarcini (To-Do):</strong> Folosește un array pentru a stoca 3-4 sarcini. Afișează-le într-o listă HTML folosind o buclă <code>foreach</code>. Adaugă un element nou în array cu <code>array_push</code>.</li>
+        <li><strong>Funcție de verificare paritate:</strong> Scrie o funcție <code>estePar($numar)</code> care returnează <code>true</code> dacă numărul este par și <code>false</code> în caz contrar. Apeleaz-o pentru mai multe valori și afișează mesaje corespunzătoare.</li>
+        <li><strong>Generare numere prime:</strong> Creează un script care afișează toate numerele prime între 1 și 100 folosind o funcție <code>estePrim($n)</code> și o buclă.</li>
+    </ol>
+
+    <h2>10. Depanare și resurse utile</h2>
+    <ul>
+        <li><strong>Erori PHP:</strong> Verifică fișierul <code>error_log</code> din XAMPP sau activează raportarea erorilor adăugând la începutul scriptului: <code>ini_set('display_errors', 1); error_reporting(E_ALL);</code>.</li>
+        <li><strong>Documentație oficială:</strong> <a href="https://www.php.net/manual/ro/" target="_blank">php.net/manual/ro/</a> – excelentă și completă.</li>
+        <li><strong>Playground online:</strong> Dacă nu ai XAMPP la îndemână, poți testa fragmente pe <a href="https://onecompiler.com/php" target="_blank">onecompiler.com/php</a>.</li>
+    </ul>
+
+    <h2>Recapitulare săptămânală</h2>
+    <p><strong>Nu uita:</strong> toate fișierele tale PHP trebuie să fie în interiorul folderului <code>htdocs</code> pentru a fi rulate de serverul Apache. Folosește Live Server doar pentru HTML/CSS; pentru PHP ai nevoie de URL-ul <code>http://localhost/...</code>.</p>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const pre = e.target.nextElementSibling;
+                let codeText = '';
+                if (pre && pre.tagName === 'PRE') {
+                    codeText = pre.innerText;
+                } else {
+                    codeText = e.target.parentElement.querySelector('pre code')?.innerText || '';
+                }
+                if (codeText) {
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        const originalText = e.target.textContent;
+                        e.target.textContent = '✅ Copiat!';
+                        setTimeout(() => { e.target.textContent = originalText; }, 1500);
+                    }).catch(() => {
+                        e.target.textContent = '❌ Eroare';
+                        setTimeout(() => { e.target.textContent = '📋 Copiază'; }, 1500);
+                    });
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

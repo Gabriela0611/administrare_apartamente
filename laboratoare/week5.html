@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 5 – JavaScript avansat</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html" class="active">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 5 – JavaScript avansat</h1>
+
+    <h2>1. Condiționale</h2>
+    <p>Condiționalele permit codului să ia decizii în funcție de valoare. Acestea controlează fluxul programului: ce se
+        execută depinde de condiții evaluate la runtime.</p>
+    <p>În JavaScript, expresia din cadrul <code>if</code> este evaluată la true sau false. Se recomandă folosirea
+        <code>===</code>/<code>!==</code> pentru verificări stricte (tip și valoare), ca să evităm surprizele compared
+        cu <code>==</code>/<code>!=</code>.
+    </p>
+    <h3>if / else / else if</h3>
+    <p><code>if</code> rulează un bloc atunci când condiția este truthy, <code>else if</code> oferă un fallback, iar
+        <code>else</code> se execută când niciuna din condiții nu este îndeplinită.
+    </p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const temperatura = 18;
+
+if (temperatura >= 30) {
+    console.log("E caniculă");
+} else if (temperatura >= 20) {
+    console.log("E plăcut");
+} else if (temperatura >= 10) {
+    console.log("E răcoros");
+} else {
+    console.log("E frig");
+}</code></pre>
+    </div>
+
+    <h3>Operator ternar</h3>
+    <p>Operatorul ternar este o formă concisă pentru un if/else simplu. Ideal pentru asigurarea valorii sau returnarea
+        imediată.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const recomandare = temperatura >= 20 ? "Tricou" : "Hanorac";
+console.log(recomandare);</code></pre>
+    </div>
+
+    <h3>Switch</h3>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const zi = "miercuri";
+
+switch (zi) {
+    case "luni":
+        console.log("Începe săptămâna");
+        break;
+    case "miercuri":
+        console.log("Mijloc de săptămână");
+        break;
+    default:
+        console.log("Altă zi");
+}
+</code></pre>
+    </div>
+
+    <h2>2. Truthy/falsy și conversii</h2>
+    <p>Unele valori în JavaScript sunt evaluate ca false în contexte booleene (de exemplu, condițiile <code>if</code>)
+        și sunt numite <strong>falsy</strong>. Altele care nu sunt falsy sunt <strong>truthy</strong>. Înțelegerea
+        acestora te ajută să scrii verificări concise și fără buguri.</p>
+    <ul>
+        <li><code>false</code>, <code>0</code>, <code>""</code>, <code>null</code>, <code>undefined</code>,
+            <code>NaN</code> sunt falsy.
+        </li>
+        <li>Tot ce este altceva este truthy (inclusiv obiecte goale, array-uri goale, string-uri non-empty).</li>
+    </ul>
+    <p>Conversia explicită cu <code>Boolean()</code> va arăta clar ce se consideră truthy/falsy:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>console.log(Boolean(0)); // false
+console.log(Boolean("test")); // true
+console.log(Boolean({})); // true
+</code></pre>
+    </div>
+    <p>Operatorii <code>||</code>, <code>&&</code> și
+        <code>!<code> se bazează pe truthy/falsy. De exemplu, <code>a || b</code> returnează prima valoare truthy sau
+        ultima valoare falsy.
+    </p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre>
+    <code>const valoare = "";
+if (!valoare) {
+    console.log("Valoare invalidă");
+}
+
+const nume = prompt("Nume") || "Vizitator";
+console.log(nume);
+</code></pre>
+    </div>
+
+    <h2>3. Obiecte</h2>
+    <p>Obiectele stochează date structurate cu proprietăți și funcții (metode). Sunt utile pentru a modela entități
+        reale (de exemplu, un produs, un utilizator, o locație).</p>
+    <p>Accesul la proprietăți se poate face cu notația punct (<code>obj.proprietate</code>) sau cu notația bracket
+        (<code>obj["proprietate"]</code>), utilă când numele proprietății vine dintr-o variabilă.</p>
+    <p><code>this</code> dintr-o metodă se referă la obiectul curent (la context). Funcția <code>prezentare</code>
+        folosește <code>this.nume</code> și <code>this.varsta</code>.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const student = {
+    nume: "Ana",
+    varsta: 24,
+    hobbyuri: ["citit", "programare"],
+    prezentare() {
+        return `Student: ${this.nume}, ${this.varsta} ani`;
+    }
+};
+
+console.log(student.nume); // din punct
+console.log(student["varsta"]); // din bracket
+console.log(student.prezentare());
+
+student.adresa = "București"; // adăugare dinamică
+
+for (const cheie of Object.keys(student)) {
+    console.log(cheie, student[cheie]);
+}
+</code></pre>
+    </div>
+
+    <p><code>Object.keys(obj)</code> returnează un array cu proprietăți, <code>Object.values(obj)</code> returnează
+        valorile, iar <code>Object.entries(obj)</code> returnează perechi [cheie, valoare].</p>
+
+    <h2>4. Array-uri avansate</h2>
+    <p>Array-urile sunt colecții ordonate și oferă funcții de nivel înalt care simplifică transformările de date:</p>
+    <ul>
+        <li><code>map</code>: aplică o funcție fiecărui element și returnează un nou array.</li>
+        <li><code>filter</code>: păstrează elementele care trec o condiție.</li>
+        <li><code>reduce</code>: agregă valorile într-o singură valoare (sumă, produs, concatenare etc.).</li>
+        <li><code>find</code>: găsește primul element care îndeplinește condiția.</li>
+        <li><code>some</code>: verifică dacă cel puțin un element corespunde condiției.</li>
+        <li><code>every</code>: verifică dacă toate elementele corespund condiției.</li>
+    </ul>
+    <p>Aceasta abordare functională reduce nevoia de bucle explicite (<code>for</code>) și face codul mai expresiv și
+        mai ușor de testat.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const numere = [1, 2, 3, 4, 5];
+const pare = numere.filter(n => n % 2 === 0);
+const patrate = numere.map(n => n * n);
+const suma = numere.reduce((acc, n) => acc + n, 0);
+
+console.log(pare, patrate, suma);
+</code></pre>
+    </div>
+
+    <h2>5. Funcții avansate</h2>
+    <p>Funcțiile sunt unități de bază pentru reutilizarea logicii. Folosește parametri default pentru a evita
+        <code>undefined</code> și un număr variabil de parametri cu rest/spread.
+    </p>
+    <ul>
+        <li><code>function aduna(a = 0, b = 0)</code> asigură valori implicite când argumentul nu e trecut.</li>
+        <li><code>suma(...valori)</code> tratează orice număr de argumente ca un array în interiorul funcției.</li>
+        <li><code>...vector</code> extinde un array într-o listă de argumente (spread).</li>
+        <li>Destructuring în parametri extrage direct proprietățile obiectului.</li>
+    </ul>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>function aduna(a = 0, b = 0) {
+    return a + b;
+}
+
+function suma(...valori) {
+    return valori.reduce((acc, v) => acc + v, 0);
+}
+
+const vector = [1, 2, 3];
+console.log(Math.max(...vector));
+
+const produs = ({ nume, pret }) => `${nume}: ${pret} RON`;
+console.log(produs({ nume: "Caiet", pret: 12 }));
+</code></pre>
+    </div>
+
+    <h2>6. Scope, hoisting, closure</h2>
+    <p>Scope defineste unde o variabilă poate fi accesată. <code>var</code> are scope la nivel de funcție;
+        <code>let</code> și <code>const</code> au scope de bloc (curly braces).
+    </p>
+    <p>Hoisting înseamnă că declarațiile de variabile și funcții sunt aduse la începutul blocului de execuție, însă
+        valorile <code>let</code>/<code>const</code> nu pot fi folosite înaintea inițializării (temporal dead zone).</p>
+    <p>Closure: o funcție internă „memorează” variabilele din contextul extern chiar și după ce funcția externă și-a
+        terminat execuția.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>function counter() {
+    let value = 0;
+    return function() {
+        value += 1;
+        return value;
+    };
+}
+
+const next = counter();
+console.log(next()); // 1
+console.log(next()); // 2
+</code></pre>
+    </div>
+
+    <p>Acest tip de structură este foarte utilă pentru crearea de funcții cu stare internă (de exemplu, încărcare
+        pagini, debounce, timer).</p>
+
+    <h2>7. Exerciții practice</h2>
+    <ul>
+        <li>Crează o funcție <code>evaluareNota(nota)</code> care afișează: Excelent, Bine, Suficient sau Insuficient.
+        </li>
+        <li>Crează funcție <code>verificaInput(val)</code> cu behavior truthy/falsy.</li>
+        <li>Crează obiect <code>persoana</code> cu proprietăți și metodă <code>descriere()</code>.</li>
+        <li>Crează <code>makeCounter()</code> ce returnează obiect cu <code>increment()</code> și
+            <code>getValue()</code>.
+        </li>
+    </ul>
+
+    <h2>8. Mini proiect – listă de produse + filtre</h2>
+    <p>Mini-proiectul combină conceptele discutate: DOM, evenimente, obiecte, array-uri, funcții și condiționale. Acesta
+        poate fi folosit ca exercițiu practic complet și ca temă de laborator.</p>
+    <p>Obiectivele pașilor din proiect:</p>
+    <ul>
+        <li><strong>Formular</strong>: adună input de la utilizator și validează datele folosind truthy/falsy și
+            conditii.</li>
+        <li><strong>Array produse</strong>: salvează în memorie internă cu obiecte <code>{nume, pret, categorie}</code>.
+        </li>
+        <li><strong>Funcție de afișare</strong>: readuce DOM-ul din array cu <code>forEach</code> și
+            <code>innerHTML</code>.
+        </li>
+        <li><strong>Filtrare</strong>: exemplu cu <code>filter</code> pentru categorie.</li>
+        <li><strong>Reducere</strong>: calculează total cu <code>reduce</code>.</li>
+        <li><strong>Reset</strong>: curăță formularul și reinițializează starea.</li>
+        <li><strong>Opțional</strong>: adaugă <code>sort</code> pentru ordine după preț și <code>localStorage</code>
+            pentru persistență pe refresh.</li>
+    </ul>
+
+    <p>Pas cu pas:</p>
+    <ol>
+        <li>Scrie funcție <code>validareProdus(prod)</code> care verifică că nume e text, preț e număr pozitiv,
+            categorie e non-empty.</li>
+        <li>Creează butoane pentru filtre: toate, categorie, preț minim/maxim.</li>
+        <li>Testează și extinde aplicația cu un input de căutare text, folosind <code>includes()</code>.</li>
+    </ol>
+
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>&lt;form id="produsForm"&gt;
+    &lt;input id="produsNume" type="text" placeholder="Nume produs" /&gt;
+    &lt;input id="produsPret" type="number" placeholder="Preț" /&gt;
+    &lt;select id="produsCategorie"&gt;
+        &lt;option value=""&gt;Alege categorie&lt;/option&gt;
+        &lt;option value="electro"&gt;Electronice&lt;/option&gt;
+        &lt;option value="carte"&gt;Cărți&lt;/option&gt;
+        &lt;option value="util"&gt;Util&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;button type="submit"&gt;Adaugă&lt;/button&gt;
+&lt;/form&gt;
+&lt;button id="filtreazaBtn"&gt;Arată doar carte&lt;/button&gt;
+&lt;button id="toateBtn"&gt;Toate&lt;/button&gt;
+&lt;ul id="listaProduse"&gt;&lt;/ul&gt;
+&lt;p id="totalPret"&gt;Total: 0&lt;/p&gt;
+
+&lt;script&gt;
+const produse = [];
+const form = document.getElementById('produsForm');
+const lista = document.getElementById('listaProduse');
+const totalPret = document.getElementById('totalPret');
+
+function validareProdus({nume, pret, categorie}) {
+    if (!nume || typeof nume !== 'string') return false;
+    if (!pret || typeof pret !== 'number' || pret <= 0) return false;
+    if (!categorie) return false;
+    return true;
+}
+
+function afiseazaProduse(arr) {
+    lista.innerHTML = '';
+    // ... afisează produse și total folosind forEach și reduce
+    <!-- arr.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `${p.nume} (${p.categorie}) - ${p.pret} RON`;
+        lista.appendChild(li);
+    });
+    const total = arr.reduce((acc, p) => acc + p.pret, 0);
+    totalPret.textContent = `Total: ${total} RON`; -->
+}
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    <!-- const nume = document.getElementById('produsNume').value.trim();
+    const pret = Number(document.getElementById('produsPret').value);
+    const categorie = document.getElementById('produsCategorie').value;
+
+    const produs = { nume, pret, categorie };
+    if (!validareProdus(produs)) {
+        alert('Completează toate câmpurile corect');
+        return;
+    } -->
+    // ...adaugă produs validat în array și afișează
+
+    produse.push({ ...produs });
+    afiseazaProduse(produse);
+    form.reset();
+});
+
+document.getElementById('filtreazaBtn').addEventListener('click', () => {
+    <!-- const carti = produse.filter(p => p.categorie === 'carte'); -->
+    // ...afișează doar cărțile
+    afiseazaProduse(carti);
+});
+
+document.getElementById('toateBtn').addEventListener('click', () => {
+    afiseazaProduse(produse);
+});
+&lt;/script&gt;
+</code></pre>
+    </div>
+
+    <h2>9. localStorage – Persistență pe refresh</h2>
+    <p>localStorage permite salvarea datelor în browser-ul utilizatorului, pe disc local. Acestea rămân disponibile
+        chiar și după ce pagina este închisă și deschisă din nou. Este ideal pentru preferințe, liste, coșuri de
+        cumpărături, și alte date care nu necesită server.</p>
+
+    <h3>Concepte de bază</h3>
+    <ul>
+        <li><strong>localStorage.setItem(key, value)</strong> – Salvează o pereche cheie-valoare. Valorile sunt mereu
+            string-uri; pentru obiecte trebuie să folosești <code>JSON.stringify()</code>.</li>
+        <li><strong>localStorage.getItem(key)</strong> – Recuperează valoarea. Dacă cheia nu există, returnează
+            <code>null</code>.
+        </li>
+        <li><strong>localStorage.removeItem(key)</strong> – Șterge o înregistrare.</li>
+        <li><strong>localStorage.clear()</strong> – Șterge tot localStorage-ul.</li>
+    </ul>
+
+    <h3>localStorage vs sessionStorage</h3>
+    <p>localStorage persistă pagina, sessionStorage se șterge când tab-ul se închide.</p>
+
+    <h3>JSON.stringify și JSON.parse</h3>
+    <p>localStorage salvează doar string-uri, nu obiecte. Pentru a salva obiecte sau array-uri, trebuie să le
+        convertesti
+        cu <code>JSON.stringify()</code>; pentru a le obține, folosești <code>JSON.parse()</code>.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const student = { nume: "Ana", varsta: 24 };
+
+// Salvare
+localStorage.setItem('student', JSON.stringify(student));
+
+// Recuperare
+const recuperat = localStorage.getItem('student');
+const obj = JSON.parse(recuperat);
+console.log(obj.nume); // Ana
+</code></pre>
+    </div>
+
+    <h3>Exemplu practic: Salvare și încărcare de produse</h3>
+    <p>Iată cum extinzi mini-proiectul pentru a salva produse în localStorage:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const produse = [];
+const STORAGE_KEY = 'produse_list'; // Cheie unica pentru localStorage
+
+// Funcție pentru salvare
+function salvareLocalStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(produse));
+}
+
+// Funcție pentru încărcare
+function incarcareLocalStorage() {
+    const salvate = localStorage.getItem(STORAGE_KEY);
+    if (salvate) {
+        return JSON.parse(salvate);
+    }
+    return [];
+}
+
+// La inițializare, încarcă din localStorage
+const saved = incarcareLocalStorage();
+produse.push(...saved);
+afiseazaProduse(produse);
+
+// După adăugarea unui produs, salvează
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // ...validare...
+    produse.push({ nume, pret, categorie });
+    afiseazaProduse(produse);
+    salvareLocalStorage(); // Salvează noua listă
+    form.reset();
+});
+
+// Buton pentru a șterge tot
+document.getElementById('clearBtn')?.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    produse.length = 0;
+    afiseazaProduse(produse);
+    console.log('localStorage șters');
+});
+</code></pre>
+    </div>
+
+    <h3>Limitări și bune practici</h3>
+    <ul>
+        <li><strong>Limita de spațiu</strong>: Majoritatea browser-elor permit ~5-10MB pe domeniu.</li>
+        <li><strong>Doar string-uri</strong>: Mereu convertă obiecte cu JSON.</li>
+        <li><strong>Sincron</strong>: localStorage este sincron, nu async; pentru volume mari, folosește indexedDB.</li>
+        <li><strong>Cheii unice</strong>: Definește constante pentru chei localStorage (e.g., <code>STORAGE_KEY</code>)
+            pentru a evita typo-uri.</li>
+        <li><strong>Validare la incărcare</strong>: După JSON.parse, verifică că datele corespund structurii așteptate,
+            în caz că au fost modificate.</li>
+    </ul>
+
+    <h3>Exercițiu: localStorage cu utilizator</h3>
+    <p>Extinde proiectul anterior:</p>
+    <ol>
+        <li>Salvează produsele în localStorage la fiecare modificare.</li>
+        <li>La încărcare pagină, restaurează produsele salvate anterior.</li>
+        <li>Adaugă buton "Șterge tot" care curăță localStorage și UI.</li>
+        <li>Opțional: Salvează și categoria selectată anterior în filter buton.</li>
+    </ol>
+
+    <h2>10. Resurse suplimentare</h2>
+    <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">MDN JavaScript</a></li>
+        <li><a href="https://javascript.info/" target="_blank">javascript.info</a></li>
+    </ul>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

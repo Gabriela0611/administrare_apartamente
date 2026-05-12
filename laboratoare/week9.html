@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://teoflr.github.io/web-2026/week9.html -->
+<html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Săptămâna 9 – Baze de date MySQL cu XAMPP și phpMyAdmin</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+        h1, h2, h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+        ul, ol {
+            margin-left: 2rem;
+        }
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #e1e4e8;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+        }
+        .copy-btn:hover {
+            background: #d0d7de;
+        }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+        .tip {
+            background: #e6ffed;
+            border-left: 4px solid #2cbe4e;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .warning {
+            background: #fff5b1;
+            border-left: 4px solid #e36209;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #d0d7de;
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="https://teoflr.github.io/web-2026/index.html">Cuprins</a>
+    <a href="https://teoflr.github.io/web-2026/week1.html">Săptămâna 1</a>
+    <a href="https://teoflr.github.io/web-2026/week2.html">Săptămâna 2</a>
+    <a href="https://teoflr.github.io/web-2026/week3.html">Săptămâna 3</a>
+    <a href="https://teoflr.github.io/web-2026/week4.html">Săptămâna 4</a>
+    <a href="https://teoflr.github.io/web-2026/week5.html">Săptămâna 5</a>
+    <a href="https://teoflr.github.io/web-2026/week6.html">Săptămâna 6</a>
+    <a href="https://teoflr.github.io/web-2026/week7.html">Săptămâna 7</a>
+    <a href="https://teoflr.github.io/web-2026/week8.html">Săptămâna 8</a>
+    <a href="https://teoflr.github.io/web-2026/week9.html" class="active">Săptămâna 9</a>
+    <!-- <a href="week10.html">Săptămâna 10</a> -->
+</nav>
+
+<h1>Laborator 9 – MySQL si phpMyAdmin: crearea unei baze de date si aplicatie CRUD pentru studenti</h1>
+
+<h2>1. Pornirea XAMPP si accesarea phpMyAdmin</h2>
+<ol>
+    <li>Porniti Apache si MySQL din XAMPP Control Panel.</li>
+    <li>Deschideti browser-ul si mergeti la <code>http://localhost/phpmyadmin</code>.</li>
+    <li>Interfata phpMyAdmin permite administrarea vizuala a bazelor de date.</li>
+</ol>
+
+<h2>2. Crearea bazei de date si a tabelei "studenti"</h2>
+<p>O baza de date contine tabele. Un tabel are coloane (câmpuri) si randuri (inregistrari).</p>
+<p>Executati urmatorul script SQL in fila "SQL" din phpMyAdmin:</p>
+<div class="code-block">
+    <button class="copy-btn">Copiază</button>
+    <pre><code>CREATE DATABASE facultate;
+USE facultate;
+
+CREATE TABLE studenti (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nume VARCHAR(100) NOT NULL,
+    prenume VARCHAR(100) NOT NULL,
+    grupa VARCHAR(20) NOT NULL,
+    an_studiu INT NOT NULL,
+    specializare VARCHAR(100)
+);</code></pre>
+</div>
+<p>Explicatii coloane: id cheie primara, creste automat. NOT NULL asigura completarea campului. VARCHAR(100) = sir de maxim 100 caractere.</p>
+
+<h2>3. Ce este un query SQL?</h2>
+<p>Query-urile sunt comenzile trimise bazei de date pentru manipulare date.</p>
+<ul>
+    <li><strong>INSERT</strong>: adauga un rand nou. Exemplu: <code>INSERT INTO studenti (nume, prenume, grupa, an_studiu) VALUES ('Popescu', 'Ion', 'A1', 2);</code></li>
+    <li><strong>SELECT</strong>: extrage date. <code>SELECT * FROM studenti WHERE an_studiu = 1;</code></li>
+    <li><strong>UPDATE</strong>: modifica date existente. <code>UPDATE studenti SET grupa = 'A2' WHERE id = 3;</code></li>
+    <li><strong>DELETE</strong>: sterge randuri. <code>DELETE FROM studenti WHERE id = 5;</code></li>
+</ul>
+<p>In PHP vom folosi functii mysqli pentru a executa aceste comenzi in siguranta.</p>
+
+<h2>4. Conectarea PHP la MySQL (mysqli)</h2>
+<p>Cream fisierul <code>config.php</code> in folderul <code>C:\xampp\htdocs\student_crud</code> (sau similar pe macOS).</p>
+<div class="code-block">
+    <button class="copy-btn">Copiază</button>
+    <pre><code>&lt;?php
+// config.php
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$database = 'facultate';
+
+$conn = new mysqli($host, $user, $password, $database);
+
+if ($conn-&gt;connect_error) {
+    die('Conexiune esuata: ' . $conn-&gt;connect_error);
+}
+$conn-&gt;set_charset('utf8');
+?&gt;</code></pre>
+</div>
+
+<h2>5. Formular de adaugare studenti si afisare tabel</h2>
+<p>Cream fisierul <code>index.php</code> care contine formularul (metoda POST) si tabelul cu toti studentii din baza de date.</p>
+<div class="code-block">
+    <button class="copy-btn">Copiază</button>
+    <pre><code>&lt;?php
+require_once 'config.php';
+
+// Procesare adaugare student
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &amp;&amp; isset($_POST['adauga'])) {
+    $nume = trim($_POST['nume']);
+    $prenume = trim($_POST['prenume']);
+    $grupa = trim($_POST['grupa']);
+    $an_studiu = (int)$_POST['an_studiu'];
+    $specializare = trim($_POST['specializare']);
+
+    if (!empty($nume) &amp;&amp; !empty($prenume) &amp;&amp; !empty($grupa) &amp;&amp; $an_studiu &gt;= 1 &amp;&amp; $an_studiu &lt;= 4) {
+        $stmt = $conn-&gt;prepare("INSERT INTO studenti (nume, prenume, grupa, an_studiu, specializare) VALUES (?, ?, ?, ?, ?)");
+        $stmt-&gt;bind_param("sssis", $nume, $prenume, $grupa, $an_studiu, $specializare);
+        if ($stmt-&gt;execute()) {
+            $succes = "Student adaugat cu succes.";
+        } else {
+            $eroare = "Eroare la inserare: " . $conn-&gt;error;
+        }
+        $stmt-&gt;close();
+    } else {
+        $eroare = "Toate campurile obligatorii trebuie completate corect.";
+    }
+}
+
+// Preluare studenti pentru afisare
+$sql = "SELECT * FROM studenti ORDER BY id DESC";
+$result = $conn-&gt;query($sql);
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Gestionare studenti&lt;/title&gt;
+    &lt;style&gt; table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 6px; } &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Adauga student nou&lt;/h2&gt;
+    &lt;?php if(isset($succes)) echo "&lt;p style='color:green'&gt;$succes&lt;/p&gt;"; ?&gt;
+    &lt;?php if(isset($eroare)) echo "&lt;p style='color:red'&gt;$eroare&lt;/p&gt;"; ?&gt;
+    &lt;form method="post"&gt;
+        Nume: &lt;input type="text" name="nume" required&gt;&lt;br&gt;
+        Prenume: &lt;input type="text" name="prenume" required&gt;&lt;br&gt;
+        Grupa: &lt;input type="text" name="grupa" required&gt;&lt;br&gt;
+        An studiu: &lt;input type="number" name="an_studiu" min="1" max="4" required&gt;&lt;br&gt;
+        Specializare: &lt;input type="text" name="specializare"&gt;&lt;br&gt;
+        &lt;button type="submit" name="adauga"&gt;Adauga student&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;h2&gt;Lista studenti&lt;/h2&gt;
+    &lt;?php if ($result &amp;&amp; $result-&gt;num_rows &gt; 0): ?&gt;
+    &lt;table&gt;
+        IDNumePrenumeGrupaAnSpecializare
+        &lt;?php while($row = $result-&gt;fetch_assoc()): ?&gt;
+        
+            &lt;?= $row['id'] ?&gt;
+            &lt;?= htmlspecialchars($row['nume']) ?&gt;
+            &lt;?= htmlspecialchars($row['prenume']) ?&gt;
+            &lt;?= htmlspecialchars($row['grupa']) ?&gt;
+            &lt;?= $row['an_studiu'] ?&gt;
+            &lt;?= htmlspecialchars($row['specializare']) ?&gt;
+        
+        &lt;?php endwhile; ?&gt;
+    
+    &lt;?php else: ?&gt;
+        &lt;p&gt;Nu exista studenti in baza de date.&lt;/p&gt;
+    &lt;?php endif; ?&gt;
+    &lt;?php $conn-&gt;close(); ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+
+<h2>6. Testare si depanare</h2>
+<p>Accesati <code>http://localhost/student_crud/index.php</code>. Completati formularul. Studentii nou adaugati vor aparea imediat in tabel.</p>
+<div class="warning">Daca nu se conecteaza, verificati daca MySQL ruleaza. Verificati numele bazei de date si credentialele.</div>
+
+<h2>7. Exercitii laborator</h2>
+<ol>
+    <li>Adaugati o coloana "data_nasterii" (tip DATE) in tabela studenti, prin ALTER TABLE. Modificati formularul si scriptul de insert pentru a prelua aceasta data.</li>
+    <li>Realizati o pagina separata "sterge.php" care primeste un parametru id (via GET) si sterge studentul corespunzator din baza de date. Adaugati in tabel un link "Sterge" pentru fiecare rand.</li>
+    <li>Adaugati un camp de cautare (search) dupa nume sau prenume, care filtreaza rezultatele afisate in tabel.</li>
+    <li>Creati un raport simplu care afiseaza numarul de studenti pe fiecare an de studiu (GROUP BY an_studiu).</li>
+</ol>
+<div class="tip">Pentru a preveni erori la stergere, folositi prepared statements si confirmare JavaScript inainte de a trimite cererea GET.</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const code = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            btn.textContent = 'Copiat!';
+            setTimeout(() => { btn.textContent = 'Copiază'; }, 1500);
+        });
+    });
+});
+</script>
+
+
+</body></html>

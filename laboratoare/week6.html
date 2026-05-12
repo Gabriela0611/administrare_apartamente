@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 6 – API-uri, AJAX și jQuery</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html" class="active">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 6 – API-uri, AJAX și jQuery</h1>
+
+    <h2>1. Introducere în API-uri</h2>
+    <p>Un <strong>API (Application Programming Interface)</strong> este o interfață care permite aplicațiilor să
+        comunice între ele. În context web, API-urile sunt accesate prin HTTP, iar datele sunt adesea returnate în
+        format JSON.</p>
+    <p>API-urile permit:</p>
+    <ul>
+        <li>Preluarea datelor de pe un server distant.</li>
+        <li>Trimiterea de date pentru procesare.</li>
+        <li>Actualizarea sau ștergerea de resurse.</li>
+        <li>Autentificarea și autorizarea.</li>
+    </ul>
+
+    <h3>Structura unui API și REST</h3>
+    <p><strong>REST (Representational State Transfer)</strong> este o arhitectură care folosește HTTP în mod standard.
+        Un API RESTful expune resurse (posts, users, comments) accesibile prin URL-uri și operate prin metode HTTP.</p>
+    <p>Exemplu de structură REST:</p>
+    <ul>
+        <li><code>GET /posts</code> – Obține toate postările.</li>
+        <li><code>GET /posts/1</code> – Obține postarea cu ID 1.</li>
+        <li><code>POST /posts</code> – Crează o nouă postare.</li>
+        <li><code>PUT /posts/1</code> – Actualizează postarea cu ID 1 complet.</li>
+        <li><code>PATCH /posts/1</code> – Actualizează parțial postarea cu ID 1.</li>
+        <li><code>DELETE /posts/1</code> – Șterge postarea cu ID 1.</li>
+    </ul>
+
+    <h3>Format JSON</h3>
+    <p>JSON (JavaScript Object Notation) este formatul standard pentru schimbul de date în API-uri. Este ușor de citit
+        și ușor de parsat în JavaScript.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Exemplu de răspuns API în JSON
+{
+    "id": 1,
+    "title": "Titlu postare",
+    "body": "Conținut postare",
+    "userId": 1
+}
+
+// Array de obiecte
+[
+    {
+        "id": 1,
+        "title": "Postare 1",
+        "userId": 1
+    },
+    {
+        "id": 2,
+        "title": "Postare 2",
+        "userId": 1
+    }
+]
+</code></pre>
+    </div>
+
+    <p>Un exemplu simplu: <code>https://jsonplaceholder.typicode.com/posts/1</code> returnează obiectul de mai sus în
+        format JSON.</p>
+
+    <h2>2. AJAX (Asynchronous JavaScript and XML)</h2>
+    <p><strong>AJAX</strong> permite să faci cereri HTTP din JavaScript fără a reîncărca pagina. Deși se numește "XML",
+        azi se folosește mai mult JSON. "Asynchronous" este cuvântul cheie – cererea se execută în fundal, iar pagina
+        rămâne responsivă.</p>
+
+    <h3>Sincron vs Asincron</h3>
+    <p><strong>Cod sincron</strong> se execută linie după linie, iar fiecare operație trebuie să se termine înainte de
+        următoarea. Dacă faci o cerere la server care durează 3 secunde, aplicația se blochează pentru 3 secunde –
+        utilizatorul nu poate interacționa cu pagina.</p>
+    <p><strong>Cod asincron</strong> permite operații de lungă durată să se execute în fundal. Restul codului continuă
+        să se execute, iar când cererea se termină, o callback sau Promise-ul se rezolvă. Utilizatorul rămâne în
+        control.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// SINCRON (rău) - pagina se blochează
+const response = earnestFetchSync('https://jsonplaceholder.typicode.com/posts/1'); // Aștept 3 secunde!
+console.log('Datele sunt:', response); // Abia după 3 secunde ajung aici
+console.log('Utilizatorul poate interacționa'); // Și trebuie să aștepte
+
+// ASINCRON (bun) - pagina rămâne responsivă
+console.log('Incepe cererea...');
+fetch('https://jsonplaceholder.typicode.com/posts/1'); // Nu aștept, continui imediat
+console.log('Cererea s-a inițiat, continui'); // Aceasta se execută imediat
+// Când cererea se termină, un callback/Promise se va rezolva în fundal
+</code></pre>
+    </div>
+
+    <h3>XMLHttpRequest (XHR) – Metoda tradițională</h3>
+    <p><code>XMLHttpRequest</code> este API-ul original pentru AJAX, disponibil în browser-e de zeci de ani. Sintaxa
+        este mai verboză.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1');
+
+// Verifică starea cererii pe măsură ce progresează
+xhr.onreadystatechange = function() {
+    console.log('Stare:', xhr.readyState); // 0=init, 1=opened, 2=headers_received, 3=loading, 4=done
+};
+
+// Când cererea se termină cu succes
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        const post = JSON.parse(xhr.responseText);
+        console.log('Titlu:', post.title);
+    } else {
+        console.error('HTTP Error:', xhr.status);
+    }
+};
+
+// Dacă apare o eroare de rețea
+xhr.onerror = function() {
+    console.error('Eroare de rețea – nu s-a putut conecta la server');
+};
+
+// Trimite cererea
+xhr.send();
+console.log('Cererea a fost trimisă, dar nu aștept răspunsul');
+</code></pre>
+    </div>
+
+    <h3>Fetch API – Metoda modernă cu Promises</h3>
+    <p><code>Fetch</code> este API-ul modern (introdus unde 2015) și este mult mai curat. Returnează
+        <strong>Promise-uri</strong>, care sunt obiecte care reprezintă o valoare care va fi disponibilă în viitor (sau
+        o eroare).
+    </p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => {
+        // response este obiectul răspunsului HTTP
+        console.log('Status:', response.status);
+        console.log('OK:', response.ok);
+        
+        // response.json() returnează un alt Promise care se rezolvă cu datele parsate
+        return response.json();
+    })
+    .then(data => {
+        // data este obiectul JSON parsat
+        console.log('Titlu:', data.title);
+    })
+    .catch(error => {
+        // Dacă apare o eroare la oricare din .then-uri
+        console.error('Eroare:', error.message);
+    });
+
+console.log('Cererea a fost inițiată');
+</code></pre>
+    </div>
+
+    <h3>Promises – Fundația pentru Async/Await</h3>
+    <p>Un <strong>Promise</strong> reprezentă rezultatul unei operații asincrone care se va completa în viitor. Poate
+        fi:</p>
+    <ul>
+        <li><strong>Pending</strong> – Operația este încă în progres.</li>
+        <li><strong>Fulfilled (rezolvat)</strong> – Operația s-a terminat cu succes, și avem o valoare.</li>
+        <li><strong>Rejected (respins)</strong> – Operația s-a terminat cu o eroare.</li>
+    </ul>
+    <p>Poți crea propriile Promise-uri:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Promise care se rezolvă după 2 secunde
+const myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('Operația s-a terminat cu succes!');
+    }, 2000);
+});
+
+myPromise
+    .then(result => console.log(result)) // Se execută după 2 secunde
+    .catch(error => console.error(error));
+
+console.log('Aștept Promise-ul...');
+
+// Promise care se respinge
+const failPromise = new Promise((resolve, reject) => {
+    reject(new Error('Ceva s-a dereglat!'));
+});
+
+failPromise
+    .then(result => console.log(result))
+    .catch(error => console.error('Am prins eroarea:', error.message));
+</code></pre>
+    </div>
+
+    <h2>3. Metode HTTP și operații REST</h2>
+    <p>API-urile folosesc diferite metode HTTP pentru operații diferite. Aceasta este conhecurea conventiei REST:</p>
+    <ul>
+        <li><code>GET</code> – Preluarea datelor (nu modifică server-ul, sigură de executat multiple ori).</li>
+        <li><code>POST</code> – Trimiterea de noi date (creare resurse, modifică server-ul).</li>
+        <li><code>PUT</code> – Înlocuirea unei resurse întregi (update complet).</li>
+        <li><code>PATCH</code> – Actualizarea parțială a unei resurse (schimbă doar câteva câmpuri).</li>
+        <li><code>DELETE</code> – Ștergerea unei resurse (modifică server-ul).</li>
+    </ul>
+
+    <h3>HTTP Status Codes – Înțelegerea răspunsurilor</h3>
+    <p>Fiecare răspuns HTTP include un <strong>status code</strong> care indică ce s-a întâmplat:</p>
+    <ul>
+        <li><code>1xx</code> – Informație (rar întâlnit).</li>
+        <li><code>2xx</code> – Succes (200 OK, 201 Created, 204 No Content).</li>
+        <li><code>3xx</code> – Redirecționare (301, 302, 304).</li>
+        <li><code>4xx</code> – Eroare client (400 Bad Request, 401 Unauthorized, 404 Not Found, 429 Too Many Requests).
+        </li>
+        <li><code>5xx</code> – Eroare server (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable).</li>
+    </ul>
+
+    <h3>Exemple cu Fetch pentru diferite metode</h3>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// GET (implicit) - Preluare date
+fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(res => res.json())
+    .then(data => console.log(data));
+
+// POST - Creare resursa nouă
+fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        title: 'Titlu nou',
+        body: 'Conținut',
+        userId: 1
+    })
+})
+    .then(res => res.json())
+    .then(data => console.log('Creat:', data.id)); // Serverul returnează ID-ul nou
+
+// PUT - Update complet
+fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        title: 'Titlu modificat',
+        body: 'Conținut modificat',
+        userId: 1
+    })
+})
+    .then(res => res.json())
+    .then(data => console.log('Actualizat:', data));
+
+// PATCH - Update parțial (schimbă doar unele câmpuri)
+fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        title: 'Doar titlul se modifică' // body rămâne neschimbat
+    })
+})
+    .then(res => res.json())
+    .then(data => console.log('Parțial actualizat:', data));
+
+// DELETE - Ștergere
+fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    method: 'DELETE'
+})
+    .then(res => {
+        if (res.ok) console.log('Șters cu succes');
+        return res.json();
+    });
+</code></pre>
+    </div>
+
+    <h2>4. Async/Await – Programare asincronă ușor de citit</h2>
+    <p><strong>Async/await</strong> este sintaxa modernă pentru a lucra cu Promise-uri și operații asincrone. Face codul
+        să arate ca șicodurile sincron, dar rămâne asincron în fundal.</p>
+
+    <h3>Ce înseamnă async?</h3>
+    <p>Cuvântul cheie <code>async</code> declară o funcție ca fiind asincronă. O funcție <code>async</code>:</p>
+    <ul>
+        <li>Returnează mereu un Promise.</li>
+        <li>Permite folosirea <code>await</code> în interiorul ei.</li>
+        <li>Dacă returnezi o valoare normală, va fi returnată ca Promise rezolvat.</li>
+    </ul>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Funcție async simplă
+async function greet() {
+    return 'Salut!';
+}
+
+greet(); // Returnează un Promise
+
+greet().then(mesaj => console.log(mesaj)); // "Salut!"
+
+// Echivalent cu:
+function greetTraditional() {
+    return Promise.resolve('Salut!');
+}
+</code></pre>
+    </div>
+
+    <h3>Ce înseamnă await?</h3>
+    <p>Cuvântul cheie <code>await</code> pune în pauză execuția funcției async până când Promise-ul se rezolvă.
+        Returnează valoarea din Promise.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>async function loadPosts() {
+    console.log('1. Incepe cererea');
+    
+    // await pune în pauză aici până când Promise-ul fetch se rezolvă
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+    console.log('2. Răspunsul a sosit');
+    
+    // await pune în pauză din nou până când response.json() se rezolvă
+    const data = await response.json();
+    console.log('3. JSON-ul a fost parsat');
+    
+    // Acum avem datele și le putem folosi
+    console.log('Titlu:', data.title);
+    return data;
+}
+
+// Chemarea unei funcții async
+loadPosts().then(data => {
+    console.log('4. Datele au fost procesate în funcție');
+});
+
+console.log('5. Aceasta se executează imediat, fără așteptare');
+
+// Ordinea de execuție:
+// 5 -> 1 -> 2 -> 3 -> 4
+</code></pre>
+    </div>
+
+    <h3>Try/Catch – Tratarea erorilor în async/await</h3>
+    <p><code>Try/catch</code> permite capturarea erorilor în cod asincron în stil similar cu cod sincron:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>async function loadPostsSecure() {
+    try {
+        console.log('Încerc să iau datele...');
+        
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        
+        // Verifică dacă HTTP status indică succes (2xx)
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Succes:', data.title);
+        return data;
+        
+    } catch (error) {
+        // Orice eroare din try-ul de mai sus ajunge aici
+        console.error('A aparut o eroare:', error.message);
+        
+        // Poți reacționa diferit în funcție de tip:
+        if (error instanceof TypeError) {
+            console.error('Eroare de rețea – nu s-a putut conecta');
+        } else if (error.message.includes('HTTP')) {
+            console.error('Serverul a returnat o eroare');
+        }
+        
+        // Poți reîncerca, afișa mesaj utilizatorului, etc.
+        return null;
+    } finally {
+        // Se execută mereu, indiferent dacă a fost succes sau eroare
+        console.log('Cererea a fost finalizată');
+    }
+}
+
+loadPostsSecure();
+</code></pre>
+    </div>
+
+    <h3>Modele practice cu async/await</h3>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Model 1: Preluare simplă
+async function getUser(id) {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+    return response.json();
+}
+
+// Unde chemat:
+const user = await getUser(1);
+console.log(user.name);
+
+// Model 2: Operație care depinde de alta
+async function getUserAndPosts(userId) {
+    const user = await getUser(userId);
+    
+    const postsResponse = await fetch(
+        `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
+    );
+    const posts = await postsResponse.json();
+    
+    return { user, posts };
+}
+
+// Model 3: Cereri paralele cu Promise.all()
+async function getMultipleUsers(ids) {
+    // Inițiază toate cererile în același timp, nu una după cealaltă
+    const promises = ids.map(id => getUser(id));
+    const users = await Promise.all(promises);
+    return users;
+}
+
+// Model 4: Retry logic
+async function fetchWithRetry(url, maxRetries = 3) {
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) return response.json();
+            throw new Error(`HTTP ${response.status}`);
+        } catch (error) {
+            lastError = error;
+            console.log(`Încercarea ${attempt} eșuată, reîncerc...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Aștept mai mult cu fiecare încercare
+        }
+    }
+    
+    throw lastError;
+}
+</code></pre>
+    </div>
+
+    <h3>Async/Await vs Promises – Comparație</h3>
+    <p>Amândouă fac același lucru, dar async/await este mai ușor de citit:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Cu Promises (.then)
+function loadPostsPromises() {
+    return fetch('https://jsonplaceholder.typicode.com/posts/1')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.title);
+            return data;
+        })
+        .catch(error => {
+            console.error('Eroare:', error);
+        });
+}
+
+// Cu async/await (mai clar!)
+async function loadPostsAsync() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        const data = await response.json();
+        console.log(data.title);
+        return data;
+    } catch (error) {
+        console.error('Eroare:', error);
+    }
+}
+
+// Amândouă se folosesc la fel:
+loadPostsPromises().then(data => console.log('Gata'));
+await loadPostsAsync();
+</code></pre>
+    </div>
+
+    <h2>5. Introducere în jQuery</h2>
+    <p>jQuery este o bibliotecă JavaScript care simplifică manipularea DOM-ului, handle de evenimente și AJAX. Deși azi
+        framework-urile moderne (React, Vue) sunt preferred, jQuery este încă folosit în multe proiecte legacy și pentru
+        prototipuri rapide.</p>
+
+    <h3>Ce este jQuery?</h3>
+    <p>jQuery oferă o API mai simplă decât vanilla JavaScript pentru:</p>
+    <ul>
+        <li>Selectarea și manipularea elementelor DOM.</li>
+        <li>Handle de evenimente (click, submit, input, etc.).</li>
+        <li>Efecte și animații.</li>
+        <li>AJAX requests (mai simplu decât Fetch API).</li>
+        <li>Compatibilitate între browser-e - jQuery gestionează cazurile speciale.</li>
+    </ul>
+
+    <h3>Instalare și includere</h3>
+    <p>Poți înclude jQuery din CDN (Content Delivery Network) direct în HTML. jQuery trebuie inclus înainte de propriile
+        tale scripturi:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>&lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;
+&lt;!-- Propriile tale scripturi jQuery pot veni după --&gt;
+&lt;script src="script.js"&gt;&lt;/script&gt;
+</code></pre>
+    </div>
+
+    <h3>Selectoare și manipulare DOM în jQuery</h3>
+    <p>jQuery folosește sintaxa <code>$()</code> (sau <code>jQuery()</code>) pentru a selecta elemente și returneaza un
+        obiect jQuery pe care poți aplica metode:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Selectoare - returnează obiecte jQuery
+$('#myId');           // ID - selectează elementul cu id="myId"
+$('.myClass');        // Clasă - selectează toate elementele cu class="myClass"
+$('div');             // Tag - selectează toate div-urile
+$('div.active');      // Tag + Clasă - selectează div-uri cu class="active"
+$('[data-id="5"]');   // Atribut - selectează după atribut personalizat
+$('li:first');        // Pseudoselector - primul element li
+$('li:not(.hidden)'); // Negate selector - li care nu au clasa hidden
+
+// Manipulare text și HTML
+$('#myId').text('Nou text');                    // Schimbă textul (plain text)
+$('#myId').html('&lt;strong&gt;Bold&lt;/strong&gt;');       // Schimbă HTML interior (HTML-ul este parsat)
+console.log($('#myId').text());                  // Citește textul
+console.log($('#myId').html());                  // Citește HTML-ul
+
+// Manipulare clase
+$('#myId').addClass('active');                   // Adaugă clasa
+$('#myId').removeClass('active');                // Elimină clasa
+$('#myId').toggleClass('active');                // Adaugă/elimină în funcție de prezență
+
+// Manipulare CSS
+$('#myId').css('color', 'red');                  // O proprietate
+$('#myId').css({                                 // Multiple proprietăți
+    'color': 'blue',
+    'background-color': 'yellow',
+    'font-size': '16px'
+});
+
+// Manipulare atribute
+$('#myId').attr('data-id', '123');               // Set atribut
+console.log($('#myId').attr('data-id'));         // Get atribut
+$('#myId').removeAttr('data-id');                // Remove atribut
+
+// Manipulare valorile formularelor
+$('#myInput').val('Nova valoare');               // Set valoare
+console.log($('#myInput').val());                 // Get valoare
+
+// Vizibilitate
+$('#myId').show();                               // Arată (display: block)
+$('#myId').hide();                               // Ascunde (display: none)
+$('#myId').toggle();                             // Toggle între show și hide
+
+// Proprietăți dimensionale
+$('#myId').width();                              // Lățime conținutului
+$('#myId').height();                             // Înălțime conținutului
+$('#myId').outerWidth();                         // Include padding și border
+$('#myId').outerHeight(true);                    // Include margin
+
+// Navigare DOM
+$('#myId').parent();                             // Elementul parent
+$('#myId').children();                           // Copii direcți
+$('#myId').find('.child');                       // Descendenți cu selectorul dat
+$('#myId').next();                               // Element sibling următor
+$('#myId').prev();                               // Element sibling anterior
+</code></pre>
+    </div>
+
+    <h3>AJAX cu jQuery – Mult mai simplu decât Fetch!</h3>
+    <p>jQuery oferă metode speciale pentru AJAX care sunt mai concise decât Fetch API. Toate metodele jQuery AJAX
+        returnează un obiect jqXHR care are metode <code>.done()</code>, <code>.fail()</code>, și <code>.always()</code>
+        pentru handle.</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// GET simplu - cea mai concisă formă
+$.get('https://jsonplaceholder.typicode.com/posts/1', function(data) {
+    console.log('Titlu:', data.title);
+});
+
+// POST - trimite date și primește răspuns
+$.post('https://jsonplaceholder.typicode.com/posts', {
+    title: 'Titlu',
+    body: 'Conținut',
+    userId: 1
+}, function(data) {
+    console.log('Creat cu ID:', data.id);
+});
+
+// AJAX generic cu mai multe opțiuni și handles
+$.ajax({
+    url: 'https://jsonplaceholder.typicode.com/posts/1',
+    type: 'GET',
+    dataType: 'json',              // Expect JSON
+    timeout: 5000,                 // Timeout după 5 secunde
+    success: function(data) {
+        console.log('Succes:', data);
+    },
+    error: function(xhr, status, error) {
+        console.error('Eroare:', status, error);
+    },
+    complete: function() {
+        // Se execută mereu, succes sau nu
+        console.log('AJAX terminat');
+    }
+});
+
+// AJAX cu .done() .fail() .always() (stil mai modern)
+$.ajax({
+    url: 'https://jsonplaceholder.typicode.com/posts',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ title: 'Test', body: 'Test', userId: 1 })
+})
+    .done(function(data) {
+        console.log('Succes:', data);
+    })
+    .fail(function(jqXHR, status, error) {
+        console.error('Eșuat:', error);
+    })
+    .always(function() {
+        console.log('Finalizat');
+    });
+
+// Scurtătură pentru JSON specificFetch
+$.getJSON('https://jsonplaceholder.typicode.com/posts/1', function(data) {
+    console.log(data);
+});
+</code></pre>
+    </div>
+
+    <h3>Event handling cu jQuery</h3>
+    <p>jQuery face event handling-ul mai simplu și consistent în toate browser-ele:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// Click event
+$('#myBtn').click(function() {
+    console.log('Buton apăsat');
+    $(this).text('Apăsat!'); // $(this) referă elementul clic
+});
+
+// Input event - se declanșează pe fiecare schimbare
+$('#myInput').on('input', function() {
+    console.log('Valoare curentă:', $(this).val());
+});
+
+// Submit event
+$('form').submit(function(e) {
+    e.preventDefault(); // Previne trimiterea normală a formularului
+    console.log('Formular trimis');
+    // Poți trimite datele cu AJAX în loc de reload
+});
+
+// Change event - declanșează când elementul pierde focus (select, input, textarea)
+$('#mySelect').change(function() {
+    console.log('Selectat:', $(this).val());
+});
+
+// Hover - enter și leave
+$('#myId').hover(
+    function() { console.log('Enter'); },
+    function() { console.log('Leave'); }
+);
+
+// KeyUp și KeyDown
+$('#myInput').keyup(function(e) {
+    if (e.keyCode === 13) { // Enter key
+        console.log('Enter apăsat');
+    }
+});
+
+// Event delegation - handle de evenimente pentru elemente adăugate dinamic
+$(document).on('click', '.dynamicButton', function() {
+    console.log('Dynamic button clicked');
+});
+</code></pre>
+    </div>
+
+    <h2>6. Integrarea Fetch vs jQuery AJAX – Care să folosesc?</h2>
+    <p>Azi, <code>Fetch</code> este preferred pentru cod modern și nou, dar jQuery AJAX este încă util pentru proiecte
+        existente și rapid prototyping. Iată o comparație:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// jQuery AJAX
+$.ajax({
+    url: 'https://jsonplaceholder.typicode.com/posts',
+    type: 'GET',
+    success: function(data) {
+        console.log(data);
+    },
+    error: function() {
+        console.error('Eroare');
+    }
+});
+
+// Fetch modern (echivalent)
+fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Eroare', error));
+
+// Fetch cu async/await (stil modern)
+async function getData() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Eroare', error);
+    }
+}
+</code></pre>
+    </div>
+
+    <h3>Când să folosesc jQuery AJAX?</h3>
+    <ul>
+        <li>Proiecte legacy care deja folosesc jQuery.</li>
+        <li>Trebuie compatibilitate cu browser-e foarte vechi.</li>
+        <li>Vrei cod mai concis pentru AJAX simplu.</li>
+        <li>Folosești deja jQuery pentru DOM manipulation.</li>
+    </ul>
+
+    <h3>Când să folosesc Fetch?</h3>
+    <ul>
+        <li>Proiecte noi unde jQuery nu este deja inclus.</li>
+        <li>Modern framework-uri (React, Vue, Angular).</li>
+        <li>Ai nevoie de control mai fin asupra request-urilor.</li>
+        <li>Vrei să evitezi dependența externă (jQuery).</li>
+    </ul>
+
+    <h2>7. Mini proiect – Gestionar de postări cu JSONPlaceholder</h2>
+    <p>Prin integrarea API-urilor și jQuery, vom construi o aplicație completă de gestiune a postărilor de pe
+        JSONPlaceholder. Aplicația va permite:</p>
+    <ul>
+        <li>Încărcare și afișare a unei liste de postări.</li>
+        <li>Filtrare pe baza utilizatorului.</li>
+        <li>Creare de noi postări.</li>
+        <li>Ștergerea postărilor.</li>
+    </ul>
+
+    <h3>Mini-proiect: Versiune cu Async/Await (Modern)</h3>
+    <p>Iată același mini-proiect, dar rescris folosind <code>async/await</code> în loc de jQuery AJAX callback-uri.
+        Codul este mai clar și ușor de urmărit:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Gestionar Postări (Modern)&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial; margin: 2rem; }
+        .postare { border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; }
+        button { padding: 0.5rem 1rem; cursor: pointer; }
+        input, textarea { width: 100%; padding: 0.5rem; }
+        #loading { display: none; color: blue; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Gestionar Postări (Fetch + Async/Await)&lt;/h1&gt;
+    
+    &lt;div id="loading"&gt;Se încarcă...&lt;/div&gt;
+    
+    &lt;form&gt;
+        &lt;input id="title" placeholder="Titlu" required&gt;
+        &lt;textarea id="body" placeholder="Conținut" required&gt;&lt;/textarea&gt;
+        &lt;input id="userId" type="number" value="1"&gt;
+        &lt;button type="button" onclick="handleCreate()"&gt;Adaugă&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;input id="filterUser" type="number" placeholder="User ID"&gt;
+    &lt;button onclick="handleFilter()"&gt;Filtrează&lt;/button&gt;
+    &lt;button onclick="loadPosts()"&gt;Reîncarcă&lt;/button&gt;
+
+    &lt;div id="postsList"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        const API_URL = 'https://jsonplaceholder.typicode.com';
+        let allPosts = [];
+
+        // Afișează loading indicator
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Fetch cu try/catch
+        async function loadPosts() {
+            try {
+                showLoading();
+                const response = await fetch(API_URL + '/posts');
+                if (!response.ok) throw new Error('Eroare HTTP');
+                
+                allPosts = await response.json();
+                displayPosts(allPosts);
+                console.log('Postări încărcate:', allPosts.length);
+            } catch (error) {
+                console.error('Eroare:', error);
+                alert('Eroare la încărcare');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Crează postare
+        async function handleCreate() {
+            const title = document.getElementById('title').value;
+            const body = document.getElementById('body').value;
+            const userId = parseInt(document.getElementById('userId').value);
+
+            if (!title || !body) {
+                alert('Completează toate câmpurile');
+                return;
+            }
+
+            try {
+                showLoading();
+                const response = await fetch(API_URL + '/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, body, userId })
+                });
+
+                if (!response.ok) throw new Error('Eroare creație');
+                const created = await response.json();
+                
+                alert('Creat cu ID: ' + created.id);
+                document.querySelector('form').reset();
+                loadPosts();
+            } catch (error) {
+                alert('Eroare: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Afișează postări
+        function displayPosts(posts) {
+            const html = posts.map(p => `
+                &lt;div class="postare"&gt;
+                    &lt;h3&gt;${p.title}&lt;/h3&gt;
+                    &lt;p&gt;${p.body}&lt;/p&gt;
+                    &lt;small&gt;User: ${p.userId}&lt;/small&gt;
+                    &lt;button onclick="handleDelete(${p.id})"&gt;Șterge&lt;/button&gt;
+                &lt;/div&gt;
+            `).join('');
+            document.getElementById('postsList').innerHTML = html;
+        }
+
+        // Șterge postare
+        async function handleDelete(id) {
+            if (!confirm('Ești sigur?')) return;
+            
+            try {
+                showLoading();
+                const response = await fetch(API_URL + '/posts/' + id, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Eroare ștergere');
+                alert('Șters');
+                loadPosts();
+            } catch (error) {
+                alert('Eroare: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Filtrează
+        function handleFilter() {
+            const userId = parseInt(document.getElementById('filterUser').value);
+            if (!userId) {
+                alert('Introdu User ID');
+                return;
+            }
+            const filtered = allPosts.filter(p => p.userId === userId);
+            displayPosts(filtered);
+        }
+
+        // Inițializare
+        loadPosts();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+    </div>
+
+    <h3>Exercițiu: Modifică mini-proiect intr-o versiune cu jQuery </h3>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <!-- <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Gestionar Postări&lt;/title&gt;
+    &lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;
+    &lt;style&gt;
+        body { font-family: Arial; margin: 2rem; }
+        .postare { border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; border-radius: 5px; }
+        .postare h3 { margin-top: 0; }
+        button { padding: 0.5rem 1rem; cursor: pointer; }
+        .delete-btn { color: red; }
+        form { margin-bottom: 2rem; padding: 1rem; background: #f5f5f5; border-radius: 5px; }
+        input, textarea, select { width: 100%; padding: 0.5rem; margin: 0.5rem 0; }
+        #postsList { max-height: 500px; overflow-y: auto; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Gestionar Postări&lt;/h1&gt;
+
+    &lt;!-- Formular creație --&gt;
+    &lt;form id="createForm"&gt;
+        &lt;h2&gt;Crează postare nouă&lt;/h2&gt;
+        &lt;input type="text" id="titleInput" placeholder="Titlu" required&gt;
+        &lt;textarea id="bodyInput" placeholder="Conținut" required&gt;&lt;/textarea&gt;
+        &lt;input type="number" id="userIdInput" placeholder="User ID" value="1" required&gt;
+        &lt;button type="submit"&gt;Adaugă Postare&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;!-- Filtru --&gt;
+    &lt;div&gt;
+        &lt;label&gt;Filtrează după User ID:
+            &lt;input type="number" id="filterUserId" placeholder="Fără filtru" min="1"&gt;
+        &lt;/label&gt;
+        &lt;button id="filterBtn"&gt;Aplică filtru&lt;/button&gt;
+        &lt;button id="allBtn"&gt;Arată toate&lt;/button&gt;
+        &lt;button id="loadBtn"&gt;Reîncarcă&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Lista postări --&gt;
+    &lt;div id="postsList"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        const JSONPLACEHOLDER_URL = 'https://jsonplaceholder.typicode.com';
+        let allPosts = [];
+
+        // Încarcă postări la inițializare
+        function loadPosts() {
+            $.ajax({
+                url: JSONPLACEHOLDER_URL + '/posts',
+                type: 'GET',
+                success: function(data) {
+                    allPosts = data;
+                    displayPosts(allPosts);
+                    console.log('Postări încărcate:', allPosts.length);
+                },
+                error: function() {
+                    $('#postsList').html('&lt;p&gt;Eroare la încărcare&lt;/p&gt;');
+                }
+            });
+        }
+
+        // Afișează postări
+        function displayPosts(posts) {
+            $('#postsList').html('');
+            posts.forEach(p => {
+                const html = `
+                    &lt;div class="postare"&gt;
+                        &lt;h3&gt;${p.title}&lt;/h3&gt;
+                        &lt;p&gt;${p.body}&lt;/p&gt;
+                        &lt;small&gt;User ID: ${p.userId} | Post ID: ${p.id}&lt;/small&gt;
+                        &lt;br&gt;
+                        &lt;button class="delete-btn" onclick="deletePost(${p.id})"&gt;Șterge&lt;/button&gt;
+                    &lt;/div&gt;
+                `;
+                $('#postsList').append(html);
+            });
+        }
+
+        // Crează postare
+        $('#createForm').submit(function(e) {
+            e.preventDefault();
+            const title = $('#titleInput').val();
+            const body = $('#bodyInput').val();
+            const userId = parseInt($('#userIdInput').val());
+
+            if (!title || !body) {
+                alert('Completează toate câmpurile');
+                return;
+            }
+
+            $.ajax({
+                url: JSONPLACEHOLDER_URL + '/posts',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ title, body, userId }),
+                success: function(data) {
+                    alert('Postare creată cu ID: ' + data.id);
+                    $('#createForm')[0].reset();
+                    loadPosts(); // Reîncarcă lista
+                },
+                error: function() {
+                    alert('Eroare la creare');
+                }
+            });
+        });
+
+        // Șterge postare
+        function deletePost(id) {
+            if (!confirm('Ești sigur?')) return;
+            $.ajax({
+                url: JSONPLACEHOLDER_URL + '/posts/' + id,
+                type: 'DELETE',
+                success: function() {
+                    alert('Postare ștearsă');
+                    loadPosts();
+                },
+                error: function() {
+                    alert('Eroare la ștergere');
+                }
+            });
+        }
+
+        // Filtrare
+        $('#filterBtn').click(function() {
+            const userId = parseInt($('#filterUserId').val());
+            if (!userId) {
+                alert('Introdu User ID');
+                return;
+            }
+            const filtered = allPosts.filter(p => p.userId === userId);
+            displayPosts(filtered);
+        });
+
+        $('#allBtn').click(function() {
+            displayPosts(allPosts);
+        });
+
+        $('#loadBtn').click(function() {
+            loadPosts();
+        });
+
+        // Inițializare
+        loadPosts();
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre> -->
+    </div>
+
+    <h2>8. Bune practici și tratarea erorilor</h2>
+    <p>La lucrul cu API-uri și operații asincrone, este important să gestionezi erorile corespunzător și să urmezi bune
+        practici:</p>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>async function fetchData(url) {
+    try {
+        // Verifică dacă URL-ul este valid și bine format
+        if (!url || typeof url !== 'string') {
+            throw new Error('URL invalid');
+        }
+        
+        // Setează un timeout pentru cerere (Fetch nu are timeout implicit)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 sec
+        
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        // Verifică dacă transport HTTP a fost ok (status 2xx)
+        if (!response.ok) {
+            // Diferite tipuri de erori au înțeles diferit
+            if (response.status === 401) {
+                throw new Error('Neautorizat – trebuie să te autentifici');
+            } else if (response.status === 404) {
+                throw new Error('Resursa nu a fost găsită');
+            } else if (response.status === 429) {
+                throw new Error('Ai trimis prea multe cereri – aștept puțin');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+        }
+        
+        // Parsează JSON-ul
+        const data = await response.json();
+        
+        // Poți valida structura datelor
+        if (!data || typeof data !== 'object') {
+            throw new Error('Datele returnate nu au formatul așteptat');
+        }
+        
+        return data;
+        
+    } catch (error) {
+        // Tratează diferite tipuri de erori
+        if (error.name === 'AbortError') {
+            console.error('Timeout – serverul a durat prea mult');
+        } else if (error instanceof TypeError) {
+            console.error('Eroare de rețea – nu s-a putut conecta');
+        } else {
+            console.error('Eroare:', error.message);
+        }
+        
+        // Poți loga eroarea pentru debug
+        console.error('Stack:', error.stack);
+        
+        // Afișează mesaj utilizatorului
+        alert('Nu s-a putut încărca datele. Verifică conexiunea și reîncearcă.');
+        
+        // Returnează o valoare implicită
+        return null;
+    }
+}
+</code></pre>
+    </div>
+
+    <h3>Alte bune practici</h3>
+    <div class="code-block"><button class="copy-btn">Copy</button>
+        <pre><code>// 1. Caching - nu face aceeași cerere de două ori
+const cache = {};
+async function fetchWithCache(url) {
+    if (cache[url]) {
+        console.log('Din cache');
+        return cache[url];
+    }
+    const data = await fetchData(url);
+    cache[url] = data;
+    return data;
+}
+
+// 2. Rate limiting - evită overloading serverului
+let requestCount = 0;
+const MAX_REQUESTS_PER_MINUTE = 60;
+async function fetchRateLimited(url) {
+    if (requestCount >= MAX_REQUESTS_PER_MINUTE) {
+        throw new Error('Prea multe cereri, aștept');
+    }
+    requestCount++;
+    return fetchData(url);
+}
+
+// 3. Loading indicator - informează utilizatorul că ceva se întâmplă
+async function fetchWithLoading(url) {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'block';
+    try {
+        return await fetchData(url);
+    } finally {
+        loader.style.display = 'none';
+    }
+}
+
+// 4. Validare date înainte de trimitere
+function validatePost(post) {
+    if (!post.title || typeof post.title !== 'string') {
+        throw new Error('Titlu invalid');
+    }
+    if (!post.body || typeof post.body !== 'string') {
+        throw new Error('Body invalid');
+    }
+    if (!post.userId || typeof post.userId !== 'number') {
+        throw new Error('UserId invalid');
+    }
+    return true;
+}
+
+// 5. Mensaje user-friendly - nu arăta detalile API în utilizator
+async function userFriendlyFetch(url) {
+    try {
+        return await fetchData(url);
+    } catch (error) {
+        // Log complet pentru dev
+        console.error('[DEBUG]', error);
+        
+        // Mesaj simplu pentru utilizator
+        if (error.message.includes('Neautorizat')) {
+            return 'Te rog autentifică-te';
+        } else if (error.message.includes('timeout')) {
+            return 'Conexiunea este slow. Reîncearcă mai târziu.';
+        } else {
+            return 'A apărut o problemă. Reîncearcă.';
+        }
+    }
+}
+</code></pre>
+    </div>
+
+    <h2>9. Exerciții</h2>
+    <ul>
+        <li><strong>Promises și async/await:</strong> Scrie o funcție cu <code>async/await</code> care preia postări și
+            comentariile pentru fiecare postare (folosește <code>Promise.all()</code> pentru a face cererile în
+            paralel).</li>
+        <li><strong>API GET/POST/DELETE:</strong> Crează o pagină care afișează utilizatorii de pe JSONPlaceholder și
+            permite ștergerea unui utilizator (folosind DELETE).</li>
+        <li><strong>Error handling:</strong> Implementează o funcție care reîncearcă cererea de 3 ori înainte de a
+            arunca eroarea finală.</li>
+        <li><strong>localStorage + AJAX:</strong> Implementează un sistem de favorit (cu localStorage) pentru postări
+            favorit, salvând și reîncărcând din storage.</li>
+        <li><strong>Loading indicator:</strong> Adaugă un spinner la AJAX requests și ascunde-l când datele sunt
+            încărcate.</li>
+        <li><strong>Paginare:</strong> Implementează paginare pentru lista de postări (10 per pagină).</li>
+        <li><strong>Căutare text:</strong> Adaugă input de căutare care filtrează postările folosind
+            <code>filter()</code> și <code>includes()</code>.
+        </li>
+    </ul>
+
+    <h2>10. Resurse suplimentare</h2>
+    <ul>
+        <li><a href="https://jsonplaceholder.typicode.com/" target="_blank">JSONPlaceholder API – Test API pentru
+                învățare</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">MDN Fetch API –
+                Documentație oficială</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous" target="_blank">MDN
+                Asynchronous JavaScript – Ghid complet</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+                target="_blank">MDN Promise – Explicare detalică</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+                target="_blank">MDN Async Function – Sintaxă și exemple</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"
+                target="_blank">MDN Await – Detalii și cazuri de utilizare</a></li>
+        <li><a href="https://api.jquery.com/" target="_blank">jQuery API Documentation – Referință completă</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest" target="_blank">MDN XMLHttpRequest
+                – API-ul tradițional</a></li>
+        <li><a href="https://javascript.info/promise" target="_blank">JavaScript.info Promises – Tutorial interactiv</a>
+        </li>
+        <li><a href="https://javascript.info/async-await" target="_blank">JavaScript.info Async/Await – Explicație pas
+                cu pas</a></li>
+        <li><a href="https://httpwg.org/" target="_blank">HTTP Specification – Ce sunt metodele HTTP și status codes</a>
+        </li>
+    </ul>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

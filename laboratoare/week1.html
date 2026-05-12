@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 1 – Configurarea Mediului</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html" class="active">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 1 – Configurarea Mediului de Dezvoltare</h1>
+
+    <h2>1. Instalare XAMPP</h2>
+    <p>XAMPP este un pachet care conține Apache (server web), MySQL (baza de date), PHP și alte utilitare necesare
+        pentru dezvoltarea web locală. Urmează instrucțiunile pentru sistemul operativ pe care lucrezi:</p>
+
+    <h3>Pentru macOS</h3>
+    <ol>
+        <li>Deschide site-ul <a href="https://www.apachefriends.org/download.html"
+                target="_blank">https://www.apachefriends.org/download.html</a>.</li>
+        <li>Selectează versiunea pentru macOS și descarcă fișierul .dmg.</li>
+        <li>Deschide fișierul .dmg și urmează instrucțiunile installer-ului.</li>
+        <li>După instalare, caută XAMPP în Applications folder și deschide-l.</li>
+        <li>Deschide XAMPP Control Panel (sau "XAMPP Manager") și pornește modulele <strong>Apache</strong> și
+            <strong>MySQL</strong>.
+        </li>
+        <li>Verifică funcționarea: deschide browserul și navighează la <code>http://localhost</code>. Ar trebui să vezi
+            pagina de start XAMPP cu mesajul "It Works!".</li>
+        <li>Folderul root pentru proiecte web se află în <code>/Applications/XAMPP/htdocs</code>. Acolo îți vei pune
+            fișierele HTML și CSS.</li>
+    </ol>
+
+    <h3>Pentru Windows</h3>
+    <ol>
+        <li>Deschide site-ul <a href="https://www.apachefriends.org/download.html"
+                target="_blank">https://www.apachefriends.org/download.html</a>.</li>
+        <li>Selectează versiunea pentru Windows și descarcă fișierul .exe.</li>
+        <li>Rulează fișierul .exe și urmează instrucțiunile installer-ului (recomandă instalarea în
+            <code>C:\xampp</code>).
+        </li>
+        <li>Dacă Windows cere permisiunea (UAC), acceptă.</li>
+        <li>După instalare, deschide XAMPP Control Panel din Start menu.</li>
+        <li>Pornește modulele <strong>Apache</strong> și <strong>MySQL</strong> (butonul "Start" lângă fiecare).</li>
+        <li>Verifică funcționarea: deschide browserul și navighează la <code>http://localhost</code>. Ar trebui să vezi
+            pagina de start XAMPP.</li>
+        <li>Folderul root pentru proiecte web se află în <code>C:\xampp\htdocs</code>. Acolo îți vei pune fișierele HTML
+            și CSS.</li>
+    </ol>
+
+    <h2>2. Configurare VS Code</h2>
+    <ul>
+        <li>Instalează Visual Studio Code de la <a href="https://code.visualstudio.com/"
+                target="_blank">code.visualstudio.com</a>.</li>
+        <li>Deschide-l și adaugă extensii utile:
+            <ul>
+                <li><code>HTML CSS Support</code></li>
+                <li><code>Live Server</code></li>
+                <li><code>GitLens</code></li>
+                <li><code>GitHub Copilot</code> (dacă ai acces)</li>
+            </ul>
+        </li>
+        <li>Deschide folderul de proiect (de exemplu <code>htdocs</code> din XAMPP sau un subfolder propriu).</li>
+        <li>Activează Live Server (clic dreapta pe <code>index.html</code> &gt; <em>Open with Live Server</em>) pentru a
+            vedea modificările automat.</li>
+    </ul>
+
+    <h2>3. Inițializare Git și Copilot</h2>
+
+    <h3>Ce este Git și de ce îl folosim?</h3>
+    <p>Git este un sistem de control al versiunilor. Cu ajutorul lui, poți:</p>
+    <ul>
+        <li>Salva diferite versiuni ale codului tău ("snapshots").</li>
+        <li>Vedea ce s-a schimbat între versiuni.</li>
+        <li>Lucra colaborativ cu alții fără să vă suprascrieți munca reciprocă.</li>
+        <li>Reveni la o versiune anterioară dacă ceva se rupe.</li>
+    </ul>
+
+    <h3>Concepte Git de bază</h3>
+    <ul>
+        <li><strong>Repository (repo)</strong> – folderul tău de proiect care conține codul și istoricul versiunilor.
+        </li>
+        <li><strong>Commit</strong> – salvarea unei versiuni; este ca o fotografie a codului la acel moment.</li>
+        <li><strong>Branch</strong> – o copie a codului în care poți experimenta fără să afectezi versiunea principală
+            (main/master).</li>
+        <li><strong>Remote</strong> – o copie a repository-ului pe un server (de exemplu GitHub).</li>
+    </ul>
+
+    <h3>Pași pentru inițializare Git</h3>
+    <p>Deschide terminalul integrat în VS Code (⌃` pe macOS sau Ctrl+` pe Windows, sau <em>View &gt; Terminal</em>) și
+        rulează:</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git init</code></pre>
+    </div>
+    <p>Aceasta creează un folder ascuns <code>.git</code> care va ține evidența versiunilor.</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add .</code></pre>
+    </div>
+    <p>Aceasta pregătește toate fișierele curente pentru salvare ("staging area").</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git commit -m "Prima versiune"</code></pre>
+    </div>
+    <p>Aceasta salvează versiunea cu mesajul "Prima versiune". Mesajul trebuie să descrie ce s-a schimbat. Mesajele de
+        commit trebuie să fie descriptive și în limba pe care ai ales (de exemplu "Adaugă navbar" sau "Actualizează
+        stiluri CSS").</p>
+
+    <h3>Comenzi Git utile pentru început</h3>
+    <ul>
+        <li><code>git status</code> – arată ce fișiere au fost modificate și care sunt pregătite pentru commit.</li>
+        <li><code>git log</code> – afișează istoricul commit-urilor (apasă Q pentru a ieși).</li>
+        <li><code>git diff</code> – arată diferențele între versiunea curentă și versiunea salvată anterior.</li>
+    </ul>
+
+    <h3>Conectare la GitHub (opțional)</h3>
+    <p>Dacă vrei să stochezi codul online și să colaborezi, creează un repository pe <a href="https://github.com"
+            target="_blank">GitHub.com</a>. După ce creezi repository-ul, rulează în terminal:</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git remote add origin https://github.com/username/proiect.git</code></pre>
+    </div>
+    <p>Aceasta leagă folderul local de repository-ul online (înlocuiește <code>username</code> cu al tău și
+        <code>proiect</code> cu numele repository-ului).
+    </p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git push -u origin main</code></pre>
+    </div>
+    <p>Aceasta trimite versiunea locală online pe branch-ul <code>main</code>. După prima dată, poți doar folosi
+        <code>git push</code> pentru a trimite modificari.
+    </p>
+
+    <h3>GitHub Copilot</h3>
+    <p>Copilot este o extensie care te ajută să generezi cod mai rapid. După ce o instalezi în VS Code, pur și simplu
+        începe să tastezi și o vei vedea sugerand cod în timp real. Acceptă sugestia cu <kbd>Tab</kbd> sau ignor-o și
+        continuă cu propriul cod. Este o unealtă excelentă pentru a învăța noi sintaxe și modele de codare.</p>
+
+    <h2>4. Crearea primului fișier HTML</h2>
+
+    <h3>Ce sunt etichetele HTML și de ce le folosim?</h3>
+    <p>HTML (HyperText Markup Language) este limbajul care se folosește pentru a crea pagini web. Etichetele (tags) sunt
+        instrucțiuni care spun browserului cum să afișeze conținutul. Fiecare etichetă are o anumită semnificație:</p>
+    <ul>
+        <li>Etichetele se scriu cu caractere &lt; și &gt;: <code>&lt;tagname&gt;</code>.</li>
+        <li>Majoritatea etichetelor au o etichetă de deschidere și una de închidere:
+            <code>&lt;tag&gt;...conținut...&lt;/tag&gt;</code>.
+        </li>
+        <li>Etichetele descriu ceea ce conțin: <code>&lt;h1&gt;</code> pentru titlu principal, <code>&lt;p&gt;</code>
+            pentru paragraf, etc.</li>
+        <li>Prin folosirea etichetelor corecte, facem pagina mai ușor de înțeles atât pentru browser, cât și pentru
+            motoarele de căutare (SEO – Search Engine Optimization).</li>
+    </ul>
+
+    <h3>Crearea fișierului</h3>
+    <p>În directorul proiectului creează un fișier nou numit <code>index.html</code>. Completează-l astfel:</p>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Prima pagină&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bine aţi venit!&lt;/h1&gt;
+    &lt;p&gt;Aceasta este prima ta pagină HTML.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+    </div>
+
+    <h3>Explicații pentru etichetele din cod</h3>
+    <ul>
+        <li><code>&lt;!DOCTYPE html&gt;</code> – spune browserului că documentul este HTML5 (versiunea modernă); trebuie
+            să fie prima linie din fișier.</li>
+        <li><code>&lt;html lang="ro"&gt;</code> – eticheta de început a întregului document; atributul
+            <code>lang="ro"</code> spune că pagina e în limba română.
+        </li>
+        <li><code>&lt;head&gt;</code> – secțiune pentru metadate (informații despre pagină care nu se vad direct pe
+            ecran).</li>
+        <li><code>&lt;meta charset="UTF-8"&gt;</code> – spune browserului ce set de caractere folosim; UTF-8 permite
+            caractere românești (ă, î, ș, ț, etc.) și caractere din alte limbi.</li>
+        <li><code>&lt;title&gt;</code> – titlul paginii; apare în tab-ul browserului, nu pe pagina în sine; este
+            important pentru SEO și pentru a ajuta utilizatorii să-și amintească despre pagina ta.</li>
+        <li><code>&lt;body&gt;</code> – conținutul vizibil al paginii.</li>
+        <li><code>&lt;h1&gt;</code> – titlu de nivel 1 (cel mai important), titlul principal al paginii; Este permis
+            doar un singur <code>h1</code> pe pagină.</li>
+        <li><code>&lt;p&gt;</code> – paragraf; folosit pentru blocuri de text.</li>
+    </ul>
+
+    <h3>Salvare și vizualizare</h3>
+    <p>Salvează fișierul (⌘S pe macOS sau Ctrl+S pe Windows). Apoi vizualizează-l în browser:</p>
+    <ul>
+        <li><strong>Cu Live Server (recomandat):</strong> clic dreapta pe <code>index.html</code> în explorer-ul de
+            fișiere din VS Code → <em>Open with Live Server</em>. Browserul se deschide automat și vei vedea pagina.
+            Orice modificare pe care o faci va apărea instantaneu în browser.</li>
+        <li><strong>Manual:</strong> dublu click pe fisier si il deschizi in browser <strong> sau </strong> copiază
+            fișierul în folderul <code>htdocs</code> (macOS: <code>/Applications/XAMPP/htdocs</code>, Windows:
+            <code>C:\xampp\htdocs</code>) și navighează la <code>http://localhost/index.html</code> în browserul tău.
+        </li>
+    </ul>
+
+    <h3>Exercițiu: Modifică pagina</h3>
+    <p>Acum că ai o pagină funcțională, încearcă să:</p>
+    <ol>
+        <li>Schimbi textul din <code>&lt;h1&gt;</code> și <code>&lt;p&gt;</code> cu propriul text.</li>
+        <li>Adaugi un alt paragraf: <code>&lt;p&gt;Text nou&lt;/p&gt;</code>.</li>
+        <li>Schimbi titlul din <code>&lt;title&gt;</code> pentru a vedea cum se schimbă în tab-ul browserului.</li>
+        <li>Salvează și observă cum se schimbă imediat pagina (dacă folosești Live Server).</li>
+    </ol>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 1000);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

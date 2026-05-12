@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Săptămâna 3 – Tabele HTML, Media Queries și Design Responsiv</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            overflow: auto;
+            border-radius: 6px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .code-block {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 10px;
+        }
+
+        nav a {
+            color: #0366d6;
+            font-weight: 600;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav a:hover {
+            background: rgba(3, 102, 214, 0.1);
+        }
+
+        nav a.active {
+            background: #0366d6;
+            color: #fff;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">Cuprins</a>
+        <a href="week1.html">Săptămâna 1</a>
+        <a href="week2.html">Săptămâna 2</a>
+        <a href="week3.html" class="active">Săptămâna 3</a>
+        <a href="week4.html">Săptămâna 4</a>
+        <a href="week5.html">Săptămâna 5</a>
+        <a href="week6.html">Săptămâna 6</a>
+        <a href="week7.html">Săptămâna 7</a>
+        <a href="week8.html">Săptămâna 8</a>
+                <a href="week9.html">Săptămâna 9</a>
+
+    </nav>
+
+    <h1>Săptămâna 3 – Tabele HTML, Media Queries și Design Responsiv</h1>
+
+    <h2>1. Introducere în tabele HTML</h2>
+    <p>Tabelele HTML sunt folosite pentru a organiza date într-un format structurat, cu rânduri și coloane. Ele sunt
+        utile pentru afișarea informațiilor tabulare, cum ar fi liste de produse, orare sau date statistice. Elementele
+        de bază ale unui tabel includ <code>&lt;table&gt;</code> pentru containerul principal, <code>&lt;tr&gt;</code>
+        pentru rânduri, <code>&lt;td&gt;</code> pentru celulele de date și <code>&lt;th&gt;</code> pentru antetele
+        coloanelor.</p>
+
+    <h3>Structura de bază a unui tabel</h3>
+    <p>Un tabel simplu constă din rânduri (<code>&lt;tr&gt;</code>) care conțin celule. Prima rând poate fi dedicată
+        antetelor (<code>&lt;th&gt;</code>), iar celelalte rânduri conțin date (<code>&lt;td&gt;</code>).</p>
+
+    <table>
+        <tr>
+            <th>Nume</th>
+            <th>Vârstă</th>
+            <th>Oraș</th>
+        </tr>
+        <tr>
+            <td>Ana</td>
+            <td>25</td>
+            <td>București</td>
+        </tr>
+        <tr>
+            <td>Mihai</td>
+            <td>30</td>
+            <td>Cluj</td>
+        </tr>
+    </table>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Nume&lt;/th&gt;
+        &lt;th&gt;Vârstă&lt;/th&gt;
+        &lt;th&gt;Oraș&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Ana&lt;/td&gt;
+        &lt;td&gt;25&lt;/td&gt;
+        &lt;td&gt;București&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Mihai&lt;/td&gt;
+        &lt;td&gt;30&lt;/td&gt;
+        &lt;td&gt;Cluj&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+    </div>
+
+    <h3>Atribute utile pentru tabele</h3>
+    <ul>
+        <li><code>colspan</code> – Permite unei celule să se întindă pe mai multe coloane. De exemplu,
+            <code>&lt;td colspan="2"&gt;</code> îmbină două coloane.
+        </li>
+        <li><code>rowspan</code> – Permite unei celule să se întindă pe mai multe rânduri. De exemplu,
+            <code>&lt;td rowspan="2"&gt;</code> îmbină două rânduri.
+        </li>
+        <li><code>border</code> – Adaugă o bordură tabelului (deși este mai bine să folosești CSS pentru stilizare).
+        </li>
+    </ul>
+
+    <h3>Exemplu cu colspan și rowspan</h3>
+
+    <table>
+        <tr>
+            <th>Ziua</th>
+            <th>Activitate</th>
+            <th>Durată</th>
+        </tr>
+        <tr>
+            <td rowspan="2">Luni</td>
+            <td>Curs HTML</td>
+            <td>2 ore</td>
+        </tr>
+        <tr>
+            <td>Curs CSS</td>
+            <td>1 oră</td>
+        </tr>
+        <tr>
+            <td>Marți</td>
+            <td colspan="2">Proiect practic</td>
+        </tr>
+    </table>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Ziua&lt;/th&gt;
+        &lt;th&gt;Activitate&lt;/th&gt;
+        &lt;th&gt;Durată&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td rowspan="2"&gt;Luni&lt;/td&gt;
+        &lt;td&gt;Curs HTML&lt;/td&gt;
+        &lt;td&gt;2 ore&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Curs CSS&lt;/td&gt;
+        &lt;td&gt;1 oră&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Marți&lt;/td&gt;
+        &lt;td colspan="2"&gt;Proiect practic&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+    </div>
+
+    <h3>Stilizarea tabelelor cu CSS</h3>
+    <p>Pentru a face tabelele mai atractive, poți adăuga stiluri CSS. De exemplu, poți seta borduri, culori de fundal
+        pentru antete și spațiere pentru celule.</p>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}</code></pre>
+    </div>
+
+    <h2>2. Introducere în Media Queries</h2>
+    <p>Media queries sunt o caracteristică CSS care permite aplicarea stilurilor diferite în funcție de caracteristicile
+        dispozitivului, cum ar fi lățimea ecranului, înălțimea, orientarea (portret sau peisaj) sau tipul de dispozitiv
+        (ecran, imprimantă). Ele sunt esențiale pentru designul responsiv, permițând site-urilor să se adapteze la
+        diferite mărimi de ecran.</p>
+
+    <h3>Sintaxa de bază</h3>
+    <p>O media query începe cu <code>@media</code>, urmată de o condiție între paranteze și un bloc de stiluri între
+        acolade.</p>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+}</code></pre>
+    </div>
+
+    <h3>Condiții comune în media queries</h3>
+    <ul>
+        <li><code>max-width</code> – Aplică stilurile dacă lățimea ecranului este mai mică sau egală cu valoarea
+            specificată.</li>
+        <li><code>min-width</code> – Aplică stilurile dacă lățimea ecranului este mai mare sau egală cu valoarea
+            specificată.</li>
+        <li><code>orientation: portrait</code> – Pentru dispozitive în modul portret (înălțime mai mare decât lățimea).
+        </li>
+        <li><code>orientation: landscape</code> – Pentru dispozitive în modul peisaj (lățime mai mare decât înălțimea).
+        </li>
+    </ul>
+
+    <h3>Exemplu de media query pentru dispozitive mobile</h3>
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>@media (max-width: 600px) {
+    .container {
+        flex-direction: column;
+    }
+    nav ul {
+        flex-direction: column;
+    }
+}</code></pre>
+    </div>
+
+    <h3>Breakpoint-uri populare</h3>
+    <p>Breakpoint-urile sunt punctele în care layout-ul se schimbă. Unele valori comune sunt:</p>
+    <ul>
+        <li>320px – Telefoane mici</li>
+        <li>768px – Tablete</li>
+        <li>1024px – Laptop-uri mici</li>
+        <li>1200px – Desktop-uri</li>
+    </ul>
+
+    <h2>3. Introducere în crearea unei pagini HTML responsive</h2>
+    <p>Designul responsiv înseamnă crearea paginilor web care se adaptează automat la diferite mărimi de ecran, oferind
+        o experiență bună pe toate dispozitivele. Principiul de bază este "mobile-first": proiectează mai întâi pentru
+        dispozitivele mobile, apoi adaugă stiluri pentru ecrane mai mari.</p>
+
+    <h3>Principiile designului responsiv</h3>
+    <ul>
+        <li><strong>Layout flexibil</strong> – Folosește unități relative (%, em, rem, vh, vw) și proprietăți CSS care
+            permit elementelor să se redimensioneze automat. De exemplu, cu <code>display: flex;</code> transformi un
+            container într-unul în care copiii ocupă spațiul disponibil. Proprietăți utile pentru layout flexibil:
+            <ul>
+                <li><code>flex-wrap: wrap;</code> – permite elementelor să treacă pe rând nou când nu mai încap pe o
+                    linie.</li>
+                <li><code>flex: 1 1 200px;</code> – combină <code>flex-grow</code>, <code>flex-shrink</code> și
+                    <code>flex-basis</code>, astfel încât elementele să crească, să se micșoreze și să pornească de la o
+                    dimensiune de bază.
+                </li>
+                <li><code>max-width: 100%;</code> – util pentru imagini, tabele și alte elemente pentru a nu depăși
+                    containerul părinte.</li>
+                <li><code>box-sizing: border-box;</code> – face ca padding-ul și border-ul să fie incluse în
+                    dimensiunile elementului, astfel încât calculele de lățime/înălțime să fie mai previzibile.</li>
+            </ul>
+        </li>
+        <li><strong>Imagini flexibile</strong> – Setează <code>max-width: 100%</code> pentru imagini pentru a le
+            împiedica să depășească containerul.</li>
+        <li><strong>Media queries</strong> – Aplică stiluri diferite pentru diferite breakpoint-uri.</li>
+        <li><strong>Grid și Flexbox</strong> – Folosește aceste tehnici pentru layout-uri care se adaptează.</li>
+    </ul>
+
+    <p>Un exemplu practic de layout flexibil este folosirea unei clase container cu <code>display: flex;</code> și
+        setarea <code>flex</code> pentru elementele copil. Astfel, elementele se redimensionează proporțional și se pot
+        rearanja în funcție de spațiu.</p>
+
+    <h4>Detalii despre proprietatea <code>flex</code> și subproprietăți</h4>
+    <p><code>flex</code> este un shorthand care combină trei proprietăți:</p>
+    <ul>
+        <li><code>flex-grow</code> – cât de mult crește un element pentru a umple spațiul liber (valoarea default este
+            <code>0</code>).
+        </li>
+        <li><code>flex-shrink</code> – cât de mult se micșorează un element atunci când nu mai încap toate elementele
+            într-un rând (valoarea default este <code>1</code>).</li>
+        <li><code>flex-basis</code> – dimensiunea de bază a elementului înainte de a împărți spațiul (poate fi
+            <code>auto</code>, <code>0</code>, sau o valoare fixă precum <code>200px</code>).
+        </li>
+    </ul>
+    <p>Exemplu: <code>flex: 1 1 220px;</code> înseamnă că elementul pornește de la 220px, poate crește (dacă mai este
+        spațiu) și se poate micșora (dacă spațiul scade).</p>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.card {
+    flex: 1 1 220px; /* crește, se micșorează, pornește de la 220px */
+    min-width: 200px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}</code></pre>
+    </div>
+
+    <h3>Exemplu de pagină responsive simplă</h3>
+    <p>Următorul exemplu arată un layout cu două coloane care devine o singură coloană pe dispozitive mici.</p>
+
+    <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ro"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Pagină Responsive&lt;/title&gt;
+    &lt;style&gt;
+        .container {
+            display: flex;
+            gap: 1rem;
+        }
+        .sidebar {
+            flex: 1;
+        }
+        .main {
+            flex: 3;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;aside class="sidebar"&gt;Bară laterală&lt;/aside&gt;
+        &lt;main class="main"&gt;Conținut principal&lt;/main&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    </div>
+
+    <h3>Meta viewport</h3>
+    <p>Pentru ca pagina să fie responsive, trebuie să adaugi
+        <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> în head. Acest lucru
+        spune browserului să seteze lățimea viewport-ului la lățimea dispozitivului și să prevină zoom-ul inițial.
+    </p>
+
+    <h3>Exercițiu practic</h3>
+    <p>Construiește o pagină HTML care include:</p>
+    <ol>
+        <li>Un tabel cu cel puțin 5 coloane (de exemplu: <em>curs</em>, <em>profesor</em>, <em>durată</em>,
+            <em>nivel</em>, <em>status</em>).
+        </li>
+        <li>O clasă CSS pentru tabel (<code>.responsive-table</code>) care adaugă borduri, spațiere și culori ușoare
+            pentru antete.</li>
+        <li>Cel puțin un media query care modifică layout-ul pe mobil:
+            <ul>
+                <li>Pe ecrane mici (<code>max-width: 600px</code>) ascunde coloanele mai puțin importante (de exemplu
+                    <em>durata</em> și <em>status</em>).
+                </li>
+                <li>Sau transformă rândurile în „carduri” (folosind <code>display: block</code> și
+                    <code>display: grid</code> pentru fiecare rând) pentru o vizualizare mai ușor de citit.
+                </li>
+            </ul>
+        </li>
+    </ol>
+    <p>Test: Deschide pagina în browser și redimensionează fereastra de la desktop la mobil; verifică că tabelul devine
+        mai ușor de citit și că coloanele se ascund / se rearanjează corect.</p>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('copy-btn')) {
+                const code = e.target.nextElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    e.target.textContent = 'Copied!';
+                    setTimeout(() => { e.target.textContent = 'Copy'; }, 1000);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
