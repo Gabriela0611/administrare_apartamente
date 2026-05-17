@@ -1,5 +1,7 @@
 <?php
 include "config/db.php";
+include "auth.php";
+include_once "flash.php";
 
 function e($value) {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
@@ -12,7 +14,7 @@ $suprafata = '';
 $chirie = '';
 $status = 'liber';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adauga'])) {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
     $adresa = trim($_POST['adresa'] ?? '');
     $numar_camere = (int)($_POST['numar_camere'] ?? 0);
     $suprafataInput = trim($_POST['suprafata'] ?? '');
@@ -40,11 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adauga'])) {
         $errors[] = 'Statusul selectat nu este valid.';
     }
 
+    if (!empty($errors)) {
+        array_unshift($errors, 'Eroare: completati toate campurile obligatorii.');
+    }
+
     if (empty($errors)) {
         $stmt = mysqli_prepare($conn, "INSERT INTO apartamente (adresa, numar_camere, suprafata, chirie, status) VALUES (?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt, "sidds", $adresa, $numar_camere, $suprafata, $chirie, $status);
 
         if (mysqli_stmt_execute($stmt)) {
+            set_flash('success', 'Apartamentul a fost adaugat cu succes.');
             header("Location: index.php");
             exit;
         }
@@ -63,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adauga'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <?php include "menu.php"; ?>
 
     <main class="page-shell">
         <section class="page-header">

@@ -1,11 +1,22 @@
 <?php
 include "config/db.php";
+include "auth.php";
 
 function e($value) {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
 $cautare = trim($_GET['cautare'] ?? '');
+
+$totalApartamenteResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM apartamente");
+$totalChiriasiResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM chiriasi");
+$totalRestanteResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM facturi WHERE status = 'neplatita' AND scadenta < CURDATE()");
+$totalProblemeResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM cereri_mentenanta WHERE status = 'deschisa'");
+
+$totalApartamente = mysqli_fetch_assoc($totalApartamenteResult);
+$totalChiriasi = mysqli_fetch_assoc($totalChiriasiResult);
+$totalRestante = mysqli_fetch_assoc($totalRestanteResult);
+$totalProbleme = mysqli_fetch_assoc($totalProblemeResult);
 
 if ($cautare !== '') {
     $termen = '%' . $cautare . '%';
@@ -28,6 +39,7 @@ if ($cautare !== '') {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <?php include "menu.php"; ?>
 
     <main class="page-shell">
         <section class="page-header">
@@ -36,7 +48,32 @@ if ($cautare !== '') {
                 <h1>Lista apartamentelor</h1>
             </div>
 
-            <a class="button button-primary" href="adauga_apartament.php">Adaug&#259; apartament</a>
+            <div class="header-actions">
+                <?php if (is_admin()) { ?>
+                    <a class="button button-primary" href="adauga_apartament.php">Adaug&#259; apartament</a>
+                <?php } ?>
+            </div>
+        </section>
+
+        <?php include "flash_messages.php"; ?>
+
+        <section class="dashboard-grid">
+            <div class="summary-card">
+                <span>Num&#259;r apartamente</span>
+                <strong><?php echo e($totalApartamente['total'] ?? 0); ?></strong>
+            </div>
+            <div class="summary-card">
+                <span>Chiria&#537;i activi</span>
+                <strong><?php echo e($totalChiriasi['total'] ?? 0); ?></strong>
+            </div>
+            <div class="summary-card">
+                <span>Facturi restante</span>
+                <strong><?php echo e($totalRestante['total'] ?? 0); ?></strong>
+            </div>
+            <div class="summary-card">
+                <span>Probleme deschise</span>
+                <strong><?php echo e($totalProbleme['total'] ?? 0); ?></strong>
+            </div>
         </section>
 
         <form class="search-form" method="GET">
@@ -81,7 +118,11 @@ if ($cautare !== '') {
                                     </span>
                                 </td>
                                 <td>
-                                    <a class="button button-danger" href="sterge_apartament.php?id=<?php echo e($row['id']); ?>" onclick="return confirm('Sigur stergi acest apartament?');">&#536;terge</a>
+                                    <?php if (is_admin()) { ?>
+                                        <a class="button button-danger" href="sterge_apartament.php?id=<?php echo e($row['id']); ?>" onclick="return confirm('Sigur stergi acest apartament?');">&#536;terge</a>
+                                    <?php } else { ?>
+                                        <span class="muted-text">Vizualizare</span>
+                                    <?php } ?>
                                 </td>
                             </tr>
                             <?php } ?>
