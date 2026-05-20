@@ -93,6 +93,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     <button class="button button-primary" type="submit">Intr&#259; &#238;n cont</button>
                 </div>
             </form>
+
+            <div class="auth-links">
+                <span class="muted-text">Nu ai cont?</span>
+                <a class="button button-secondary" href="register.php">Creeaza unul</a>
+            </div>
         </section>
     </main>
 

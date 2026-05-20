@@ -54,6 +54,8 @@ if (is_chirias()) {
             </div>
         </section>
 
+        <?php include "flash_messages.php"; ?>
+
         <section class="dashboard-grid">
             <div class="summary-card">
                 <span>Număr apartamente</span>
