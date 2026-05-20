@@ -1,4 +1,15 @@
 <?php
+// Send unauthenticated visitors to the landing page instead of the login form.
+if (session_status() === PHP_SESSION_NONE) {
+    $sessionDir = __DIR__ . '/sessions';
+    session_save_path($sessionDir);
+    session_start();
+}
+if (empty($_SESSION['user_logged_in'])) {
+    header("Location: landing.php");
+    exit;
+}
+
 include "config/db.php";
 include "auth.php";
 
