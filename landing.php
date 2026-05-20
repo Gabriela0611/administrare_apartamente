@@ -34,6 +34,7 @@ if ($r) {
         $apartamente[] = $row;
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ro">
@@ -126,6 +127,7 @@ if ($r) {
     .badge-g { background:rgba(4,120,87,.3); color:#6ee7b7; border:1px solid rgba(110,231,183,.3); }
     .badge-b { background:rgba(37,99,235,.3); color:#93c5fd; border:1px solid rgba(147,197,253,.3); }
 
+
     /* ── STATS ───────────────────────────────────────── */
     .lp-stats { background: var(--primary); padding: 56px 48px; }
     .lp-stats-grid {
@@ -202,6 +204,17 @@ if ($r) {
     .g4{background:linear-gradient(135deg,#43e97b,#38f9d7)}
     .g5{background:linear-gradient(135deg,#fa709a,#fee140)}
     .g6{background:linear-gradient(135deg,#a18cd1,#fbc2eb)}
+
+    /* ── CARD LINK ───────────────────────────────────── */
+    .lp-apt-link { display: block; text-decoration: none; color: inherit; }
+    .lp-apt-link:hover .lp-apt-card { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.1); }
+    .lp-apt-link:hover .lp-apt-card { border-color: #bfdbfe; }
+    .lp-apt-thumb img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .lp-apt-view {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 14px; font-size: 14px; font-weight: 700;
+      color: var(--primary);
+    }
 
     /* ── HOW IT WORKS ────────────────────────────────── */
     .lp-steps {
@@ -437,26 +450,35 @@ if ($r) {
           <p style="margin:0">&#206;nregistreaz&#259;-te &#537;i adaug&#259; primul apartament.</p>
         </div>
       <?php else: foreach ($apartamente as $i => $apt):
-        $sc       = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
-        $gradClass= $grads[$i % 6];
-        $icon     = $icons[$i % 6];
+        $sc        = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
+        $gradClass = $grads[$i % 6];
+        $icon      = $icons[$i % 6];
+        $imgs      = !empty($apt['images']) ? json_decode($apt['images'], true) : [];
+        $firstImg  = $imgs[0] ?? null;
       ?>
-        <div class="lp-apt-card" style="transition-delay:<?= $i * 0.08 ?>s">
-          <div class="lp-apt-thumb <?= e_land($gradClass) ?>">
-            <?= $icon ?>
-            <div class="lp-apt-badge">
-              <span class="status-pill <?= e_land($sc) ?>"><?= e_land(ucfirst($apt['status'])) ?></span>
+        <a class="lp-apt-link" href="apartament_detail.php?id=<?= e_land($apt['id']) ?>">
+          <div class="lp-apt-card" style="transition-delay:<?= $i * 0.08 ?>s">
+            <div class="lp-apt-thumb <?= $firstImg ? '' : e_land($gradClass) ?>">
+              <?php if ($firstImg): ?>
+                <img src="<?= e_land($firstImg) ?>" alt="Apartament foto" loading="lazy">
+              <?php else: ?>
+                <?= $icon ?>
+              <?php endif; ?>
+              <div class="lp-apt-badge">
+                <span class="status-pill <?= e_land($sc) ?>"><?= e_land(ucfirst($apt['status'])) ?></span>
+              </div>
+            </div>
+            <div class="lp-apt-body">
+              <h3><?= e_land($apt['adresa']) ?></h3>
+              <div class="lp-apt-meta">
+                <div class="lp-apt-meta-i">&#128716; <?= e_land($apt['numar_camere']) ?> camere</div>
+                <div class="lp-apt-meta-i">&#128207; <?= e_land($apt['suprafata']) ?> m&sup2;</div>
+              </div>
+              <div class="lp-apt-price"><?= e_land($apt['chirie']) ?> lei <small>/ lun&#259;</small></div>
+              <span class="lp-apt-view">Vezi galeria foto &#8594;</span>
             </div>
           </div>
-          <div class="lp-apt-body">
-            <h3><?= e_land($apt['adresa']) ?></h3>
-            <div class="lp-apt-meta">
-              <div class="lp-apt-meta-i">&#128716; <?= e_land($apt['numar_camere']) ?> camere</div>
-              <div class="lp-apt-meta-i">&#128207; <?= e_land($apt['suprafata']) ?> m&sup2;</div>
-            </div>
-            <div class="lp-apt-price"><?= e_land($apt['chirie']) ?> lei <small>/ lun&#259;</small></div>
-          </div>
-        </div>
+        </a>
       <?php endforeach; endif; ?>
     </div>
     <div class="lp-apts-footer">
