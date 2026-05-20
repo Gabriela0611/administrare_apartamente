@@ -79,6 +79,9 @@ $sqlUsers = "CREATE TABLE IF NOT EXISTS users (
 
 mysqli_query($conn, $sqlUsers);
 
+// Add images column to apartamente (silently ignored if it already exists)
+mysqli_query($conn, "ALTER TABLE apartamente ADD COLUMN images VARCHAR(2000) NULL DEFAULT NULL");
+
 $adminEmail = 'admin@test.com';
 $adminCheck = mysqli_prepare($conn, "SELECT id FROM users WHERE email = ?");
 mysqli_stmt_bind_param($adminCheck, "s", $adminEmail);
