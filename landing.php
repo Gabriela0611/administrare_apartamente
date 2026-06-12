@@ -42,7 +42,7 @@ if ($r) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ApartaGest – Administrare apartamente moderne</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
   <style>
     body.lp { background: #fff; }
 
@@ -69,7 +69,7 @@ if ($r) {
     .lp-blob-3 { width: 110px; height: 110px; top: 35%; right: 18%; }
 
     .lp-hero-inner {
-      position: relative; max-width: 1100px; margin: 0 auto;
+      position: relative; max-width: none; margin: 0 auto;
       padding: 80px 48px; width: 100%;
       display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
     }
@@ -103,12 +103,12 @@ if ($r) {
     .btn-hero-ghost:hover { background: rgba(255,255,255,.22); color: #fff; }
 
     /* Floating preview cards */
-    .lp-preview-cards { display: grid; gap: 14px; }
+    .lp-preview-cards { display: grid; gap: 16px; }
     .lp-preview-card {
       background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-      border-radius: 16px; padding: 16px 20px; backdrop-filter: blur(8px);
+      border-radius: 8px; padding: 18px 20px; backdrop-filter: blur(8px);
       display: flex; align-items: center; gap: 16px; color: #fff;
-      animation: lp-float 6s ease-in-out infinite;
+      min-height: 88px; animation: lp-float 6s ease-in-out infinite;
     }
     .lp-preview-card:nth-child(2) { animation-delay: -2s; margin-left: 20px; }
     .lp-preview-card:nth-child(3) { animation-delay: -4s; }
@@ -131,7 +131,7 @@ if ($r) {
     /* ── STATS ───────────────────────────────────────── */
     .lp-stats { background: var(--primary); padding: 56px 48px; }
     .lp-stats-grid {
-      max-width: 900px; margin: 0 auto;
+      max-width: none; margin: 0 auto;
       display: grid; grid-template-columns: repeat(3,1fr);
       gap: 32px; text-align: center;
     }
@@ -153,44 +153,46 @@ if ($r) {
 
     /* ── FEATURES ────────────────────────────────────── */
     .lp-feat-grid {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(auto-fit,minmax(290px,1fr)); gap: 22px;
+      max-width: none; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(310px,1fr)); gap: 24px;
     }
     .lp-feat-card {
-      padding: 30px 26px; border: 1px solid var(--line); border-radius: 16px;
-      background: #fff; transition: transform .25s, box-shadow .25s, border-color .25s;
+      min-height: 210px; padding: 30px 26px; border: 1px solid var(--line); border-radius: 8px;
+      background: #fff; box-shadow: var(--shadow-soft);
+      transition: transform .25s, box-shadow .25s, border-color .25s;
       opacity: 0; transform: translateY(28px);
     }
     .lp-feat-card.visible {
       opacity: 1; transform: translateY(0);
       transition: opacity .5s ease, transform .5s ease, box-shadow .25s, border-color .25s;
     }
-    .lp-feat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(37,99,235,.1); border-color: #bfdbfe; }
+    .lp-feat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(37,99,235,.12); border-color: #bfdbfe; }
     .lp-feat-icon { width: 52px; height: 52px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 18px; }
     .lp-feat-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 10px; color: var(--text); }
     .lp-feat-card p  { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.65; }
 
     /* ── APARTMENTS ──────────────────────────────────── */
     .lp-apts-grid {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 20px;
+      max-width: none; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 24px;
     }
     .lp-apt-card {
-      background: #fff; border-radius: 16px; overflow: hidden;
-      border: 1px solid var(--line); transition: transform .25s, box-shadow .25s;
+      height: 100%; background: #fff; border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--line); box-shadow: var(--shadow-soft);
+      transition: transform .25s, box-shadow .25s, border-color .25s;
       opacity: 0; transform: translateY(28px);
     }
     .lp-apt-card.visible {
       opacity: 1; transform: translateY(0);
       transition: opacity .5s ease, transform .5s ease, box-shadow .25s;
     }
-    .lp-apt-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.08); }
+    .lp-apt-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.08); border-color: #d1d5db; }
     .lp-apt-thumb {
-      height: 160px; display: flex; align-items: center; justify-content: center;
+      height: 190px; display: flex; align-items: center; justify-content: center;
       font-size: 52px; position: relative;
     }
     .lp-apt-badge { position: absolute; top: 12px; right: 12px; }
-    .lp-apt-body { padding: 18px 20px 22px; }
+    .lp-apt-body { padding: 20px 22px 24px; }
     .lp-apt-body h3 { font-size: 15px; font-weight: 700; margin: 0 0 12px; color: var(--text); }
     .lp-apt-meta { display: flex; gap: 14px; margin-bottom: 14px; }
     .lp-apt-meta-i { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--muted); font-weight: 600; }
@@ -206,10 +208,10 @@ if ($r) {
     .g6{background:linear-gradient(135deg,#a18cd1,#fbc2eb)}
 
     /* ── CARD LINK ───────────────────────────────────── */
-    .lp-apt-link { display: block; text-decoration: none; color: inherit; }
+    .lp-apt-link { display: block; height: 100%; text-decoration: none; color: inherit; }
     .lp-apt-link:hover .lp-apt-card { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,.1); }
     .lp-apt-link:hover .lp-apt-card { border-color: #bfdbfe; }
-    .lp-apt-thumb img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .lp-apt-thumb img { width: 100%; height: 190px; object-fit: cover; display: block; }
     .lp-apt-view {
       display: inline-flex; align-items: center; gap: 6px;
       margin-top: 14px; font-size: 14px; font-weight: 700;
@@ -264,9 +266,12 @@ if ($r) {
       .lp-wrap { margin-left: 0; }
       .lp-hero-inner { grid-template-columns: 1fr; padding: 32px 20px 50px; gap: 40px; }
       .lp-hero-title { font-size: 36px; }
+      .lp-preview-card:nth-child(2) { margin-left: 0; }
       .lp-stats { padding: 48px 20px; }
       .lp-stats-grid { grid-template-columns: 1fr; gap: 28px; }
       .lp-section { padding: 60px 20px; }
+      .lp-feat-grid, .lp-apts-grid { grid-template-columns: 1fr; }
+      .lp-apt-thumb, .lp-apt-thumb img { height: 180px; }
       .lp-steps { grid-template-columns: 1fr; gap: 32px; }
       .lp-steps::before { display: none; }
       .lp-cta { padding: 64px 20px; }

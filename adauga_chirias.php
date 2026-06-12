@@ -27,7 +27,7 @@ $document_copie_ci = 0;
 $document_proces_verbal = 0;
 $document_garantie = 0;
 
-$apartamente = mysqli_query($conn, "SELECT id, adresa FROM apartamente ORDER BY adresa ASC");
+$apartamente = mysqli_query($conn, "SELECT id, adresa, numar_apartament, etaj FROM apartamente WHERE status = 'liber' ORDER BY adresa ASC, numar_apartament ASC");
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
     $nume = trim($_POST['nume'] ?? '');
@@ -57,8 +57,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
         $errors[] = 'Prenumele este obligatoriu.';
     }
 
-    if ($telefon === '') {
-        $errors[] = 'Telefonul este obligatoriu.';
+    $telefonDigits = preg_replace('/\D+/', '', $telefon);
+
+    if ($telefon === '' || strlen($telefonDigits) < 7 || strlen($telefonDigits) > 15) {
+        $errors[] = 'Numarul de telefon trebuie sa fie valid.';
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -83,6 +85,26 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
 
     if ($apartament_id < 1) {
         $errors[] = 'Nu poti adauga chirias fara apartament.';
+    } else {
+        $stmtApartament = mysqli_prepare($conn, "SELECT id, status FROM apartamente WHERE id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtApartament, "i", $apartament_id);
+        mysqli_stmt_execute($stmtApartament);
+        $apartament = mysqli_fetch_assoc(mysqli_stmt_get_result($stmtApartament));
+
+        if (!$apartament) {
+            $errors[] = 'Chiriasul trebuie asociat unui apartament existent.';
+        } elseif (($apartament['status'] ?? '') === 'ocupat') {
+            $errors[] = 'Un apartament ocupat nu poate fi asociat altui chirias.';
+        }
+
+        $stmtChiriasApartament = mysqli_prepare($conn, "SELECT id FROM chiriasi WHERE apartament_id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtChiriasApartament, "i", $apartament_id);
+        mysqli_stmt_execute($stmtChiriasApartament);
+        $chiriasApartament = mysqli_stmt_get_result($stmtChiriasApartament);
+
+        if ($chiriasApartament && mysqli_fetch_assoc($chiriasApartament)) {
+            $errors[] = 'Un apartament ocupat nu poate fi asociat altui chirias.';
+        }
     }
 
     if ($numar_contract === '') {
@@ -155,7 +177,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adaug&#259; chiria&#537;</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -229,7 +251,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
                             <?php if ($apartamente && mysqli_num_rows($apartamente) > 0) { ?>
                                 <?php while($apartament = mysqli_fetch_assoc($apartamente)) { ?>
                                     <option value="<?php echo e($apartament['id']); ?>" <?php echo (int)$apartament_id === (int)$apartament['id'] ? 'selected' : ''; ?>>
-                                        <?php echo e($apartament['adresa']); ?>
+                                        <?php echo e(($apartament['numar_apartament'] ? 'Ap. ' . $apartament['numar_apartament'] . ' - ' : '') . $apartament['adresa'] . ($apartament['etaj'] !== null ? ' (etaj ' . $apartament['etaj'] . ')' : '')); ?>
                                     </option>
                                 <?php } ?>
                             <?php } ?>

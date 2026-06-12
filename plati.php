@@ -8,7 +8,7 @@ function e($value) {
 
 if (is_chirias()) {
     $chiriasId = (int)($_SESSION['user_chirias_id'] ?? 0);
-    $stmt = mysqli_prepare($conn, "SELECT f.*, a.adresa AS adresa_apartament
+    $stmt = mysqli_prepare($conn, "SELECT f.*, DATE_FORMAT(f.scadenta, '%Y-%m') AS luna_aferenta, a.adresa AS adresa_apartament
                                    FROM facturi f
                                    LEFT JOIN apartamente a ON f.apartament_id = a.id
                                    LEFT JOIN chiriasi c ON c.apartament_id = f.apartament_id
@@ -18,7 +18,7 @@ if (is_chirias()) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 } else {
-    $result = mysqli_query($conn, "SELECT f.*, a.adresa AS adresa_apartament
+    $result = mysqli_query($conn, "SELECT f.*, DATE_FORMAT(f.scadenta, '%Y-%m') AS luna_aferenta, a.adresa AS adresa_apartament
                                    FROM facturi f
                                    LEFT JOIN apartamente a ON f.apartament_id = a.id
                                    WHERE f.status = 'platita'
@@ -31,8 +31,8 @@ if (is_chirias()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plăți</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Plati</title>
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -40,8 +40,8 @@ if (is_chirias()) {
     <main class="page-shell">
         <section class="page-header">
             <div>
-                <p class="eyebrow">Plăți</p>
-                <h1>Facturi plătite</h1>
+                <p class="eyebrow">Plati</p>
+                <h1>Facturi platite</h1>
             </div>
         </section>
 
@@ -51,9 +51,10 @@ if (is_chirias()) {
                     <thead>
                         <tr>
                             <th>Apartament</th>
-                            <th>Tip factură</th>
-                            <th>Sumă</th>
-                            <th>Data plății</th>
+                            <th>Luna aferenta</th>
+                            <th>Tip factura</th>
+                            <th>Suma platita</th>
+                            <th>Data platii</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,6 +62,7 @@ if (is_chirias()) {
                             <?php while($row = mysqli_fetch_assoc($result)) { ?>
                             <tr>
                                 <td><?php echo e($row['adresa_apartament'] ?? 'Nesetat'); ?></td>
+                                <td><?php echo e($row['luna_aferenta']); ?></td>
                                 <td><?php echo e(ucfirst($row['tip_factura'])); ?></td>
                                 <td><?php echo e($row['suma']); ?> lei</td>
                                 <td><?php echo e($row['data_platii']); ?></td>
@@ -68,7 +70,7 @@ if (is_chirias()) {
                             <?php } ?>
                         <?php } else { ?>
                             <tr>
-                                <td class="empty-state" colspan="4">Nu există plăți de afișat.</td>
+                                <td class="empty-state" colspan="5">Nu exista plati de afisat.</td>
                             </tr>
                         <?php } ?>
                     </tbody>

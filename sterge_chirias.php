@@ -18,6 +18,10 @@ if ($id) {
         $apartament_id = (int)$chirias['apartament_id'];
     }
 
+    $stmt = mysqli_prepare($conn, "DELETE FROM users WHERE chirias_id = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+
     $stmt = mysqli_prepare($conn, "DELETE FROM chiriasi WHERE id = ?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);

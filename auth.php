@@ -55,13 +55,27 @@ if (!function_exists('user_can_access_page')) {
         $proprietarPages = [
             'dashboard.php',
             'index.php',
+            'adauga_apartament.php',
+            'editeaza_apartament.php',
             'chiriasi.php',
+            'adauga_chirias.php',
+            'editeaza_chirias.php',
             'documente.php',
             'contracte.php',
+            'adauga_contract.php',
+            'editeaza_contract.php',
+            'sterge_contract.php',
             'contract_chirias.php',
             'facturi.php',
+            'adauga_factura.php',
+            'editeaza_factura.php',
+            'factura_detail.php',
+            'schimba_status_factura.php',
+            'sterge_factura.php',
             'plati.php',
             'mentenanta.php',
+            'adauga_mentenanta.php',
+            'editeaza_mentenanta.php',
             'rapoarte.php',
             'logout.php'
         ];
@@ -72,6 +86,7 @@ if (!function_exists('user_can_access_page')) {
             'plati.php',
             'mentenanta.php',
             'adauga_mentenanta.php',
+            'editeaza_mentenanta.php',
             'logout.php'
         ];
 

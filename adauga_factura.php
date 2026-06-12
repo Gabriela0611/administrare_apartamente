@@ -7,42 +7,120 @@ function e($value) {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
-$tipuriFacturi = ['chirie', 'apa', 'gaz', 'curent', 'internet', 'intretinere'];
+function factura_number_default($conn) {
+    $result = mysqli_query($conn, "SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM facturi");
+    $row = $result ? mysqli_fetch_assoc($result) : ['next_id' => 1];
+
+    return 'F-' . date('Y') . '-' . str_pad((string)($row['next_id'] ?? 1), 4, '0', STR_PAD_LEFT);
+}
+
+$tipuriFacturi = ['chirie', 'apa', 'gaz', 'curent', 'internet', 'intretinere', 'mentenanta'];
 $errors = [];
-$apartament_id = '';
+$numar_factura = factura_number_default($conn);
 $tip_factura = 'chirie';
-$suma = '';
+$chirias_id = '';
+$apartament_id = '';
+$data_emitere = date('Y-m-d');
 $scadenta = '';
+$valoare_chirie = '';
+$cost_utilitati = '';
+$cost_mentenanta = '';
 $status = 'neplatita';
 $data_platii = '';
 
-$apartamente = mysqli_query($conn, "SELECT id, adresa FROM apartamente ORDER BY adresa ASC");
+$chiriasi = mysqli_query($conn, "SELECT c.id, c.nume, c.prenume, c.email, c.apartament_id, a.adresa AS adresa_apartament, a.numar_apartament
+                                 FROM chiriasi c
+                                 LEFT JOIN apartamente a ON c.apartament_id = a.id
+                                 ORDER BY c.nume ASC, c.prenume ASC");
+$apartamente = mysqli_query($conn, "SELECT a.id, a.adresa, a.numar_apartament,
+                                           c.id AS chirias_id,
+                                           c.nume AS chirias_nume,
+                                           c.prenume AS chirias_prenume
+                                    FROM apartamente a
+                                    LEFT JOIN chiriasi c ON c.id = (
+                                        SELECT c2.id
+                                        FROM chiriasi c2
+                                        WHERE c2.apartament_id = a.id
+                                          AND c2.data_inceput <= CURDATE()
+                                          AND c2.data_sfarsit >= CURDATE()
+                                        ORDER BY c2.id DESC
+                                        LIMIT 1
+                                    )
+                                    ORDER BY a.adresa ASC, a.numar_apartament ASC");
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
-    $apartament_id = (int)($_POST['apartament_id'] ?? 0);
+    $numar_factura = factura_number_default($conn);
     $tip_factura = trim($_POST['tip_factura'] ?? '');
-    $sumaInput = trim($_POST['suma'] ?? '');
-    $suma = $sumaInput === '' ? '' : (float)$sumaInput;
+    $chirias_id = (int)($_POST['chirias_id'] ?? 0);
+    $apartament_id = (int)($_POST['apartament_id'] ?? 0);
+    $data_emitere = trim($_POST['data_emitere'] ?? '');
     $scadenta = trim($_POST['scadenta'] ?? '');
+    $valoareChirieInput = trim($_POST['valoare_chirie'] ?? '');
+    $costUtilitatiInput = trim($_POST['cost_utilitati'] ?? '');
+    $costMentenantaInput = trim($_POST['cost_mentenanta'] ?? '');
     $status = trim($_POST['status'] ?? '');
     $data_platii = trim($_POST['data_platii'] ?? '');
-
-    if ($apartament_id < 1) {
-        $errors[] = 'Alege apartamentul.';
-    }
 
     if (!in_array($tip_factura, $tipuriFacturi, true)) {
         $errors[] = 'Tipul facturii nu este valid.';
     }
 
-    if ($sumaInput === '') {
-        $errors[] = 'Nu poti adauga factura fara suma.';
-    } elseif ($suma <= 0) {
-        $errors[] = 'Suma facturii trebuie sa fie mai mare decat 0.';
+    if ($chirias_id < 1) {
+        $errors[] = 'Chiriasul trebuie sa existe.';
+    } else {
+        $stmtChirias = mysqli_prepare($conn, "SELECT id, apartament_id FROM chiriasi WHERE id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtChirias, "i", $chirias_id);
+        mysqli_stmt_execute($stmtChirias);
+        $chirias = mysqli_fetch_assoc(mysqli_stmt_get_result($stmtChirias));
+
+        if (!$chirias) {
+            $errors[] = 'Chiriasul trebuie sa existe.';
+        } elseif ($apartament_id > 0 && (int)$chirias['apartament_id'] !== $apartament_id) {
+            $errors[] = 'Chiriasul trebuie sa fie asociat apartamentului selectat.';
+        }
+    }
+
+    if ($apartament_id < 1) {
+        $errors[] = 'Apartamentul trebuie sa existe.';
+    } else {
+        $stmtApartament = mysqli_prepare($conn, "SELECT id FROM apartamente WHERE id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtApartament, "i", $apartament_id);
+        mysqli_stmt_execute($stmtApartament);
+        if (!mysqli_fetch_assoc(mysqli_stmt_get_result($stmtApartament))) {
+            $errors[] = 'Apartamentul trebuie sa existe.';
+        }
+    }
+
+    if ($data_emitere === '') {
+        $errors[] = 'Data emiterii este obligatorie.';
     }
 
     if ($scadenta === '') {
-        $errors[] = 'Data scadentei trebuie completata.';
+        $errors[] = 'Data scadentei este obligatorie.';
+    } elseif ($data_emitere !== '' && $scadenta <= $data_emitere) {
+        $errors[] = 'Data scadentei trebuie sa fie mai mare decat data emiterii.';
+    }
+
+    $valoareChirie = $valoareChirieInput === '' ? 0 : (float)str_replace(',', '.', $valoareChirieInput);
+    $costUtilitati = $costUtilitatiInput === '' ? 0 : (float)str_replace(',', '.', $costUtilitatiInput);
+    $costMentenanta = $costMentenantaInput === '' ? 0 : (float)str_replace(',', '.', $costMentenantaInput);
+
+    if ($valoareChirieInput === '' || !is_numeric(str_replace(',', '.', $valoareChirieInput)) || $valoareChirie < 0) {
+        $errors[] = 'Valoarea chiriei nu poate fi negativa.';
+    }
+
+    if ($costUtilitatiInput === '' || !is_numeric(str_replace(',', '.', $costUtilitatiInput)) || $costUtilitati < 0) {
+        $errors[] = 'Costul utilitatilor nu poate fi negativ.';
+    }
+
+    if ($costMentenantaInput === '' || !is_numeric(str_replace(',', '.', $costMentenantaInput)) || $costMentenanta < 0) {
+        $errors[] = 'Costul de mentenanta nu poate fi negativ.';
+    }
+
+    $valoareTotala = $valoareChirie + $costUtilitati + $costMentenanta;
+
+    if ($valoareTotala <= 0) {
+        $errors[] = 'Valoarea totala a facturii trebuie sa fie mai mare decat 0.';
     }
 
     if (!in_array($status, ['platita', 'neplatita'], true)) {
@@ -57,22 +135,24 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
         $data_platii = null;
     }
 
-    if (!empty($errors)) {
-        array_unshift($errors, 'Eroare: completati toate campurile obligatorii.');
-    }
-
     if (empty($errors)) {
-        $stmt = mysqli_prepare($conn, "INSERT INTO facturi (apartament_id, tip_factura, suma, scadenta, status, data_platii) VALUES (?, ?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "isdsss", $apartament_id, $tip_factura, $suma, $scadenta, $status, $data_platii);
+        $stmt = mysqli_prepare($conn, "INSERT INTO facturi
+            (numar_factura, chirias_id, apartament_id, tip_factura, suma, data_emitere, scadenta, valoare_chirie, cost_utilitati, cost_mentenanta, valoare_totala, status, data_platii)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "siisdssddddss", $numar_factura, $chirias_id, $apartament_id, $tip_factura, $valoareTotala, $data_emitere, $scadenta, $valoareChirie, $costUtilitati, $costMentenanta, $valoareTotala, $status, $data_platii);
 
         if (mysqli_stmt_execute($stmt)) {
-            set_flash('success', 'Factura a fost adaugata cu succes.');
+            set_flash('success', 'Factura a fost generata cu succes.');
             header("Location: facturi.php");
             exit;
         }
 
         $errors[] = 'A aparut o eroare la salvarea facturii.';
     }
+
+    $valoare_chirie = $valoareChirieInput;
+    $cost_utilitati = $costUtilitatiInput;
+    $cost_mentenanta = $costMentenantaInput;
 }
 ?>
 
@@ -81,8 +161,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaug&#259; factur&#259;</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Genereaza factura</title>
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -91,13 +171,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
         <section class="page-header">
             <div>
                 <p class="eyebrow">Facturi</p>
-                <h1>Adaug&#259; factur&#259;</h1>
+                <h1>Genereaza factura</h1>
             </div>
-
-            <a class="button button-secondary" href="facturi.php">&#206;napoi la facturi</a>
+            <a class="button button-secondary" href="facturi.php">Inapoi la facturi</a>
         </section>
 
-        <section class="form-card">
+        <section class="form-card form-card-wide">
             <?php if (!empty($errors)) { ?>
                 <div class="alert alert-error">
                     <?php foreach ($errors as $error) { ?>
@@ -109,21 +188,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
             <form method="POST">
                 <div class="form-grid">
                     <label>
-                        <span>Apartament</span>
-                        <select name="apartament_id" required>
-                            <option value="">Alege apartamentul</option>
-                            <?php if ($apartamente && mysqli_num_rows($apartamente) > 0) { ?>
-                                <?php while($apartament = mysqli_fetch_assoc($apartamente)) { ?>
-                                    <option value="<?php echo e($apartament['id']); ?>" <?php echo (int)$apartament_id === (int)$apartament['id'] ? 'selected' : ''; ?>>
-                                        <?php echo e($apartament['adresa']); ?>
-                                    </option>
-                                <?php } ?>
-                            <?php } ?>
-                        </select>
-                    </label>
-
-                    <label>
-                        <span>Tip factur&#259;</span>
+                        <span>Tip factura</span>
                         <select name="tip_factura" required>
                             <?php foreach ($tipuriFacturi as $tip) { ?>
                                 <option value="<?php echo e($tip); ?>" <?php echo $tip_factura === $tip ? 'selected' : ''; ?>>
@@ -134,37 +199,84 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
                     </label>
 
                     <label>
-                        <span>Sum&#259;</span>
-                        <input type="number" step="0.01" min="0.01" name="suma" value="<?php echo e($suma); ?>" required>
-                    </label>
-
-                    <label>
-                        <span>Scaden&#539;&#259;</span>
-                        <input type="date" name="scadenta" value="<?php echo e($scadenta); ?>" required>
-                    </label>
-
-                    <label>
-                        <span>Status</span>
-                        <select name="status" required>
-                            <option value="neplatita" <?php echo $status === 'neplatita' ? 'selected' : ''; ?>>Nepl&#259;tit&#259;</option>
-                            <option value="platita" <?php echo $status === 'platita' ? 'selected' : ''; ?>>Pl&#259;tit&#259;</option>
+                        <span>Chirias asociat</span>
+                        <select name="chirias_id" required>
+                            <option value="">Alege chiriasul</option>
+                            <?php if ($chiriasi && mysqli_num_rows($chiriasi) > 0) { ?>
+                                <?php while($chirias = mysqli_fetch_assoc($chiriasi)) { ?>
+                                    <option value="<?php echo e($chirias['id']); ?>"
+                                            data-apartament-id="<?php echo e($chirias['apartament_id'] ?? ''); ?>"
+                                            <?php echo (int)$chirias_id === (int)$chirias['id'] ? 'selected' : ''; ?>>
+                                        <?php echo e($chirias['nume'] . ' ' . $chirias['prenume'] . ' - ' . $chirias['email']); ?>
+                                    </option>
+                                <?php } ?>
+                            <?php } ?>
                         </select>
                     </label>
 
                     <label>
-                        <span>Data pl&#259;&#539;ii</span>
+                        <span>Apartament asociat</span>
+                        <select name="apartament_id" required>
+                            <option value="">Alege apartamentul</option>
+                            <?php if ($apartamente && mysqli_num_rows($apartamente) > 0) { ?>
+                                <?php while($apartament = mysqli_fetch_assoc($apartamente)) { ?>
+                                    <?php $optionChirias = trim(($apartament['chirias_nume'] ?? '') . ' ' . ($apartament['chirias_prenume'] ?? '')); ?>
+                                    <option value="<?php echo e($apartament['id']); ?>"
+                                            data-chirias-id="<?php echo e($apartament['chirias_id'] ?? ''); ?>"
+                                            data-chirias-name="<?php echo e($optionChirias); ?>"
+                                            <?php echo (int)$apartament_id === (int)$apartament['id'] ? 'selected' : ''; ?>>
+                                        <?php echo e(($apartament['numar_apartament'] ? 'Ap. ' . $apartament['numar_apartament'] . ' - ' : '') . $apartament['adresa']); ?>
+                                    </option>
+                                <?php } ?>
+                            <?php } ?>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Data emiterii</span>
+                        <input type="date" name="data_emitere" value="<?php echo e($data_emitere); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Data scadentei</span>
+                        <input type="date" name="scadenta" value="<?php echo e($scadenta); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Valoare chirie</span>
+                        <input type="number" step="0.01" min="0" name="valoare_chirie" value="<?php echo e($valoare_chirie); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Cost utilitati</span>
+                        <input type="number" step="0.01" min="0" name="cost_utilitati" value="<?php echo e($cost_utilitati); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Cost mentenanta</span>
+                        <input type="number" step="0.01" min="0" name="cost_mentenanta" value="<?php echo e($cost_mentenanta); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Status factura</span>
+                        <select name="status" required>
+                            <option value="neplatita" <?php echo $status === 'neplatita' ? 'selected' : ''; ?>>Neplatita</option>
+                            <option value="platita" <?php echo $status === 'platita' ? 'selected' : ''; ?>>Platita</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Data platii</span>
                         <input type="date" name="data_platii" value="<?php echo e($data_platii); ?>">
                     </label>
                 </div>
 
                 <div class="form-actions">
-                    <button class="button button-primary" type="submit" name="adauga">
-                        Salveaz&#259; factura
-                    </button>
+                    <button class="button button-primary" type="submit" name="adauga">Salveaza factura</button>
                 </div>
             </form>
         </section>
     </main>
-
+    <script src="js/linked-selects.js?v=<?php echo filemtime(__DIR__ . '/js/linked-selects.js'); ?>"></script>
 </body>
 </html>

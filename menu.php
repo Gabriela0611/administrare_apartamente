@@ -22,11 +22,11 @@ function menu_active($pages, $currentPage) {
         <?php if ($role !== 'chirias') { ?>
             <div class="menu-group">
                 <span class="menu-section-title">Administrare</span>
-                <a class="<?php echo menu_active(['index.php', 'adauga_apartament.php'], $currentPage); ?>" href="index.php" title="Apartamente">
+                <a class="<?php echo menu_active(['index.php', 'adauga_apartament.php', 'editeaza_apartament.php'], $currentPage); ?>" href="index.php" title="Apartamente">
                     <span class="menu-icon">&#127962;</span>
                     <span class="menu-label">Apartamente</span>
                 </a>
-                <a class="<?php echo menu_active(['chiriasi.php', 'adauga_chirias.php'], $currentPage); ?>" href="chiriasi.php" title="Chiria&#537;i">
+                <a class="<?php echo menu_active(['chiriasi.php', 'adauga_chirias.php', 'editeaza_chirias.php'], $currentPage); ?>" href="chiriasi.php" title="Chiria&#537;i">
                     <span class="menu-icon">&#128101;</span>
                     <span class="menu-label">Chiria&#537;i</span>
                 </a>
@@ -34,7 +34,7 @@ function menu_active($pages, $currentPage) {
                     <span class="menu-icon">&#128196;</span>
                     <span class="menu-label">Documente</span>
                 </a>
-                <a class="<?php echo menu_active(['contracte.php', 'contract_chirias.php'], $currentPage); ?>" href="contracte.php" title="Contracte">
+                <a class="<?php echo menu_active(['contracte.php', 'adauga_contract.php', 'editeaza_contract.php', 'contract_chirias.php'], $currentPage); ?>" href="contracte.php" title="Contracte">
                     <span class="menu-icon">&#128203;</span>
                     <span class="menu-label">Contracte</span>
                 </a>
@@ -43,7 +43,7 @@ function menu_active($pages, $currentPage) {
 
         <div class="menu-group">
             <span class="menu-section-title">Financiar</span>
-            <a class="<?php echo menu_active(['facturi.php', 'adauga_factura.php'], $currentPage); ?>" href="facturi.php" title="Facturi">
+            <a class="<?php echo menu_active(['facturi.php', 'adauga_factura.php', 'editeaza_factura.php', 'factura_detail.php'], $currentPage); ?>" href="facturi.php" title="Facturi">
                 <span class="menu-icon">&#128176;</span>
                 <span class="menu-label">Facturi</span>
             </a>
@@ -55,7 +55,7 @@ function menu_active($pages, $currentPage) {
 
         <div class="menu-group">
             <span class="menu-section-title">Service</span>
-            <a class="<?php echo menu_active(['mentenanta.php', 'adauga_mentenanta.php'], $currentPage); ?>" href="mentenanta.php" title="Mentenan&#539;&#259;">
+            <a class="<?php echo menu_active(['mentenanta.php', 'adauga_mentenanta.php', 'editeaza_mentenanta.php'], $currentPage); ?>" href="mentenanta.php" title="Mentenan&#539;&#259;">
                 <span class="menu-icon">&#128295;</span>
                 <span class="menu-label">Mentenan&#539;&#259;</span>
             </a>

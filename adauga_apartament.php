@@ -8,47 +8,78 @@ function e($value) {
 }
 
 $errors = [];
+$numar_apartament = '';
+$etaj = '';
 $adresa = '';
 $numar_camere = '';
 $suprafata = '';
 $chirie = '';
 $status = 'liber';
+$observatii = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
+    $numar_apartament = trim($_POST['numar_apartament'] ?? '');
+    $etajInput = trim($_POST['etaj'] ?? '');
     $adresa = trim($_POST['adresa'] ?? '');
-    $numar_camere = (int)($_POST['numar_camere'] ?? 0);
+    $numarCamereInput = trim($_POST['numar_camere'] ?? '');
     $suprafataInput = trim($_POST['suprafata'] ?? '');
-    $suprafata = $suprafataInput === '' ? null : (float)$suprafataInput;
-    $chirie = (float)($_POST['chirie'] ?? 0);
+    $chirieInput = trim($_POST['chirie'] ?? '');
     $status = trim($_POST['status'] ?? '');
+    $observatii = trim($_POST['observatii'] ?? '');
+
+    $etaj = $etajInput;
+    $numar_camere = $numarCamereInput;
+    $suprafata = $suprafataInput;
+    $chirie = $chirieInput;
+
+    if ($numar_apartament === '') {
+        $errors[] = 'Numarul apartamentului este obligatoriu.';
+    }
+
+    if ($etajInput === '' || !is_numeric($etajInput)) {
+        $errors[] = 'Etajul trebuie sa fie numeric.';
+    }
+
+    $etajValue = (int)$etajInput;
 
     if ($adresa === '') {
         $errors[] = 'Adresa este obligatorie.';
     }
 
-    if ($numar_camere < 1) {
-        $errors[] = 'Numarul de camere trebuie sa fie cel putin 1.';
+    if ($numarCamereInput === '' || !ctype_digit($numarCamereInput) || (int)$numarCamereInput < 1) {
+        $errors[] = 'Numarul de camere trebuie sa fie mai mare decat 0.';
     }
 
-    if ($suprafata !== null && $suprafata <= 0) {
-        $errors[] = 'Suprafata trebuie sa fie un numar pozitiv.';
+    $numarCamereValue = (int)$numarCamereInput;
+    $suprafataValue = (float)str_replace(',', '.', $suprafataInput);
+    $chirieValue = (float)str_replace(',', '.', $chirieInput);
+
+    if ($suprafataInput === '' || !is_numeric(str_replace(',', '.', $suprafataInput)) || $suprafataValue <= 0) {
+        $errors[] = 'Suprafata trebuie sa fie mai mare decat 0.';
     }
 
-    if ($chirie <= 0) {
-        $errors[] = 'Chiria trebuie sa fie un numar pozitiv.';
+    if ($chirieInput === '' || !is_numeric(str_replace(',', '.', $chirieInput)) || $chirieValue < 0) {
+        $errors[] = 'Chiria lunara nu poate fi negativa.';
     }
 
     if (!in_array($status, ['liber', 'ocupat'], true)) {
         $errors[] = 'Statusul selectat nu este valid.';
     }
 
-    if (!empty($errors)) {
-        array_unshift($errors, 'Eroare: completati toate campurile obligatorii.');
+    if ($numar_apartament !== '' && $adresa !== '') {
+        $stmtCheck = mysqli_prepare($conn, "SELECT id FROM apartamente WHERE numar_apartament = ? AND adresa = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmtCheck, "ss", $numar_apartament, $adresa);
+        mysqli_stmt_execute($stmtCheck);
+        $existing = mysqli_stmt_get_result($stmtCheck);
+
+        if ($existing && mysqli_fetch_assoc($existing)) {
+            $errors[] = 'Exista deja un apartament cu acest numar la aceeasi adresa.';
+        }
     }
 
     if (empty($errors)) {
-        $stmt = mysqli_prepare($conn, "INSERT INTO apartamente (adresa, numar_camere, suprafata, chirie, status) VALUES (?, ?, ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, "sidds", $adresa, $numar_camere, $suprafata, $chirie, $status);
+        $stmt = mysqli_prepare($conn, "INSERT INTO apartamente (numar_apartament, etaj, adresa, numar_camere, suprafata, chirie, status, observatii) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sisiddss", $numar_apartament, $etajValue, $adresa, $numarCamereValue, $suprafataValue, $chirieValue, $status, $observatii);
 
         if (mysqli_stmt_execute($stmt)) {
             set_flash('success', 'Apartamentul a fost adaugat cu succes.');
@@ -67,7 +98,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adaug&#259; apartament</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -94,6 +125,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
             <form method="POST">
                 <div class="form-grid">
                     <label>
+                        <span>Num&#259;r apartament</span>
+                        <input type="text" name="numar_apartament" value="<?php echo e($numar_apartament); ?>" required>
+                    </label>
+
+                    <label>
+                        <span>Etaj</span>
+                        <input type="number" name="etaj" value="<?php echo e($etaj); ?>" required>
+                    </label>
+
+                    <label>
                         <span>Adres&#259;</span>
                         <input type="text" name="adresa" value="<?php echo e($adresa); ?>" required>
                     </label>
@@ -109,8 +150,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
                     </label>
 
                     <label>
-                        <span>Chirie</span>
-                        <input type="number" step="0.01" min="0.01" name="chirie" value="<?php echo e($chirie); ?>" required>
+                        <span>Chirie lunar&#259;</span>
+                        <input type="number" step="0.01" min="0" name="chirie" value="<?php echo e($chirie); ?>" required>
                     </label>
 
                     <label>
@@ -119,6 +160,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['adauga'])) {
                             <option value="liber" <?php echo $status === 'liber' ? 'selected' : ''; ?>>Liber</option>
                             <option value="ocupat" <?php echo $status === 'ocupat' ? 'selected' : ''; ?>>Ocupat</option>
                         </select>
+                    </label>
+
+                    <label class="form-full">
+                        <span>Observa&#539;ii / descriere</span>
+                        <textarea name="observatii" rows="4"><?php echo e($observatii); ?></textarea>
                     </label>
                 </div>
 

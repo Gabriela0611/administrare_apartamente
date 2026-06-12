@@ -8,9 +8,9 @@ function e($value) {
 
 function status_label($status) {
     $labels = [
-        'deschisa' => 'Deschis&#259;',
+        'deschisa' => 'Nou&#259;',
         'in_lucru' => '&#206;n lucru',
-        'rezolvata' => 'Rezolvat&#259;'
+        'rezolvata' => 'Finalizat&#259;'
     ];
 
     return $labels[$status] ?? $status;
@@ -40,10 +40,13 @@ function status_class($status) {
 }
 
 $status = trim($_GET['status'] ?? '');
+$apartament_id = (int)($_GET['apartament_id'] ?? 0);
 
 if (!in_array($status, ['', 'deschisa', 'in_lucru', 'rezolvata'], true)) {
     $status = '';
 }
+
+$apartamente = mysqli_query($conn, "SELECT id, adresa, numar_apartament FROM apartamente ORDER BY adresa ASC, numar_apartament ASC");
 
 $totalDeschiseResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM cereri_mentenanta WHERE status = 'deschisa'");
 $totalInLucruResult = mysqli_query($conn, "SELECT COUNT(*) AS total FROM cereri_mentenanta WHERE status = 'in_lucru'");
@@ -63,16 +66,18 @@ if (is_chirias()) {
                                    LEFT JOIN chiriasi c ON m.chirias_id = c.id
                                    WHERE m.chirias_id = ?
                                    AND (? = '' OR m.status = ?)
+                                   AND (? = 0 OR m.apartament_id = ?)
                                    ORDER BY m.data_raportare DESC, m.id DESC");
-    mysqli_stmt_bind_param($stmt, "iss", $chiriasId, $status, $status);
+    mysqli_stmt_bind_param($stmt, "issii", $chiriasId, $status, $status, $apartament_id, $apartament_id);
 } else {
     $stmt = mysqli_prepare($conn, "SELECT m.*, a.adresa AS adresa_apartament, c.nume, c.prenume
                                    FROM cereri_mentenanta m
                                    LEFT JOIN apartamente a ON m.apartament_id = a.id
                                    LEFT JOIN chiriasi c ON m.chirias_id = c.id
                                    WHERE (? = '' OR m.status = ?)
+                                   AND (? = 0 OR m.apartament_id = ?)
                                    ORDER BY m.data_raportare DESC, m.id DESC");
-    mysqli_stmt_bind_param($stmt, "ss", $status, $status);
+    mysqli_stmt_bind_param($stmt, "ssii", $status, $status, $apartament_id, $apartament_id);
 }
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -84,7 +89,7 @@ $result = mysqli_stmt_get_result($stmt);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentenan&#539;&#259;</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -129,14 +134,28 @@ $result = mysqli_stmt_get_result($stmt);
                 <span>Status</span>
                 <select name="status">
                     <option value="" <?php echo $status === '' ? 'selected' : ''; ?>>Toate</option>
-                    <option value="deschisa" <?php echo $status === 'deschisa' ? 'selected' : ''; ?>>Deschise</option>
+                    <option value="deschisa" <?php echo $status === 'deschisa' ? 'selected' : ''; ?>>Noi</option>
                     <option value="in_lucru" <?php echo $status === 'in_lucru' ? 'selected' : ''; ?>>&#206;n lucru</option>
-                    <option value="rezolvata" <?php echo $status === 'rezolvata' ? 'selected' : ''; ?>>Rezolvate</option>
+                    <option value="rezolvata" <?php echo $status === 'rezolvata' ? 'selected' : ''; ?>>Finalizate</option>
+                </select>
+            </label>
+
+            <label>
+                <span>Apartament</span>
+                <select name="apartament_id">
+                    <option value="0">Toate apartamentele</option>
+                    <?php if ($apartamente && mysqli_num_rows($apartamente) > 0) { ?>
+                        <?php while($apartament = mysqli_fetch_assoc($apartamente)) { ?>
+                            <option value="<?php echo e($apartament['id']); ?>" <?php echo $apartament_id === (int)$apartament['id'] ? 'selected' : ''; ?>>
+                                <?php echo e(($apartament['numar_apartament'] ? 'Ap. ' . $apartament['numar_apartament'] . ' - ' : '') . $apartament['adresa']); ?>
+                            </option>
+                        <?php } ?>
+                    <?php } ?>
                 </select>
             </label>
 
             <button class="button button-secondary" type="submit">Filtreaz&#259;</button>
-            <?php if ($status !== '') { ?>
+            <?php if ($status !== '' || $apartament_id > 0) { ?>
                 <a class="button button-secondary" href="mentenanta.php">Reseteaz&#259;</a>
             <?php } ?>
         </form>
@@ -152,6 +171,7 @@ $result = mysqli_stmt_get_result($stmt);
                             <th>Prioritate</th>
                             <th>Status</th>
                             <th>Data raport&#259;rii</th>
+                            <th>Data rezolv&#259;rii</th>
                             <th>Foto</th>
                             <th>Ac&#539;iuni</th>
                         </tr>
@@ -173,6 +193,7 @@ $result = mysqli_stmt_get_result($stmt);
                                     </span>
                                 </td>
                                 <td><?php echo e($row['data_raportare']); ?></td>
+                                <td><?php echo e($row['data_rezolvare'] ?: '-'); ?></td>
                                 <td>
                                     <?php if ($row['fotografie']) { ?>
                                         <a class="photo-link" href="<?php echo e($row['fotografie']); ?>" target="_blank">Vezi foto</a>
@@ -183,6 +204,9 @@ $result = mysqli_stmt_get_result($stmt);
                                 <td>
                                     <?php if (is_admin()) { ?>
                                         <div class="row-actions">
+                                            <?php if ($row['status'] !== 'rezolvata') { ?>
+                                                <a class="button button-secondary button-small" href="editeaza_mentenanta.php?id=<?php echo e($row['id']); ?>">Editeaz&#259;</a>
+                                            <?php } ?>
                                             <?php if ($row['status'] !== 'in_lucru') { ?>
                                                 <a class="button button-secondary button-small" href="schimba_status_mentenanta.php?id=<?php echo e($row['id']); ?>&status=in_lucru">&#206;n lucru</a>
                                             <?php } ?>
@@ -199,7 +223,7 @@ $result = mysqli_stmt_get_result($stmt);
                             <?php } ?>
                         <?php } else { ?>
                             <tr>
-                                <td class="empty-state" colspan="8">Nu exist&#259; cereri de mentenan&#539;&#259; pentru filtrul ales.</td>
+                                <td class="empty-state" colspan="9">Nu exist&#259; cereri de mentenan&#539;&#259; pentru filtrul ales.</td>
                             </tr>
                         <?php } ?>
                     </tbody>

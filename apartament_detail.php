@@ -28,10 +28,14 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= e_d($apt['adresa']) ?> – ApartaGest</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
   <style>
     body.det { background: var(--bg); }
-    .det-wrap { margin-left: var(--menu-rail); padding: 48px 48px 80px; max-width: 1100px; }
+    .det-wrap {
+      width: calc(100% - var(--menu-rail) - 64px);
+      margin: 0 32px 0 calc(var(--menu-rail) + 32px);
+      padding: 52px 0 80px;
+    }
 
     /* ── BACK LINK ── */
     .det-back {
@@ -42,13 +46,13 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
     .det-back:hover { color: var(--primary); }
 
     /* ── GALLERY ── */
-    .det-gallery { border-radius: 16px; overflow: hidden; background: #000; margin-bottom: 12px; position: relative; }
+    .det-gallery { border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 14px; position: relative; box-shadow: var(--shadow-soft); }
     .det-main-img {
-      width: 100%; height: 480px; object-fit: cover; display: block;
+      width: 100%; height: min(520px, 44vw); object-fit: cover; display: block;
       transition: opacity .3s ease;
     }
     .det-main-placeholder {
-      width: 100%; height: 480px; display: flex; align-items: center;
+      width: 100%; height: min(520px, 44vw); display: flex; align-items: center;
       justify-content: center; font-size: 80px;
       background: linear-gradient(135deg,#667eea,#764ba2);
     }
@@ -80,23 +84,23 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
     .det-thumb img    { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* ── INFO GRID ── */
-    .det-layout { display: grid; grid-template-columns: 1fr 320px; gap: 32px; align-items: start; }
+    .det-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); gap: 28px; align-items: start; }
     .det-info-card {
       background: var(--panel); border: 1px solid var(--line);
-      border-radius: 16px; padding: 28px; box-shadow: var(--shadow);
+      border-radius: 8px; padding: 32px; box-shadow: var(--shadow-soft);
     }
     .det-title { font-size: 26px; font-weight: 800; margin: 0 0 6px; color: var(--text); }
     .det-status { margin-bottom: 24px; }
-    .det-props { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .det-props { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
     .det-prop {
-      padding: 14px; border: 1px solid var(--line); border-radius: 10px;
+      min-height: 92px; padding: 16px; border: 1px solid var(--line); border-radius: 8px;
       background: #f9fafb;
     }
     .det-prop-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
     .det-prop-value { font-size: 18px; font-weight: 700; color: var(--text); }
 
     .det-price-card {
-      background: var(--primary); border-radius: 16px; padding: 28px;
+      background: var(--primary); border-radius: 8px; padding: 32px;
       color: #fff; box-shadow: 0 12px 32px rgba(37,99,235,.3);
     }
     .det-price-label { font-size: 13px; opacity: .8; margin-bottom: 6px; }
@@ -117,7 +121,7 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
     .det-cta-btn + .det-cta-btn:hover { background: rgba(255,255,255,.25); }
 
     @media(max-width:768px){
-      .det-wrap { margin-left: 0; padding: 24px 16px 60px; }
+      .det-wrap { width: min(100% - 32px, 1120px); margin: 0 auto; padding: 24px 0 60px; }
       .det-main-img, .det-main-placeholder { height: 260px; }
       .det-layout { grid-template-columns: 1fr; }
       .det-props { grid-template-columns: 1fr 1fr; }
@@ -194,6 +198,14 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
       </div>
       <div class="det-props">
         <div class="det-prop">
+          <div class="det-prop-label">Num&#259;r apartament</div>
+          <div class="det-prop-value"><?= e_d($apt['numar_apartament'] ?? '-') ?></div>
+        </div>
+        <div class="det-prop">
+          <div class="det-prop-label">Etaj</div>
+          <div class="det-prop-value"><?= e_d($apt['etaj'] ?? '-') ?></div>
+        </div>
+        <div class="det-prop">
           <div class="det-prop-label">Num&#259;r camere</div>
           <div class="det-prop-value">&#128716; <?= e_d($apt['numar_camere']) ?></div>
         </div>
@@ -202,6 +214,12 @@ $statusClass = $apt['status'] === 'liber' ? 'status-free' : 'status-occupied';
           <div class="det-prop-value">&#128207; <?= e_d($apt['suprafata']) ?> m&sup2;</div>
         </div>
       </div>
+      <?php if (!empty($apt['observatii'])): ?>
+        <div class="det-prop">
+          <div class="det-prop-label">Observa&#539;ii / descriere</div>
+          <div class="det-prop-value"><?= e_d($apt['observatii']) ?></div>
+        </div>
+      <?php endif; ?>
     </div>
 
     <div>

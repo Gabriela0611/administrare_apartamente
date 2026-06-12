@@ -10,6 +10,10 @@ function format_bani($value) {
     return number_format((float)$value, 2, '.', '') . ' lei';
 }
 
+function tip_factura_label($tip) {
+    return ucfirst(str_replace('_', ' ', (string)$tip));
+}
+
 function dashboard_total($conn, $sql, $luna) {
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "s", $luna);
@@ -22,9 +26,11 @@ function dashboard_total($conn, $sql, $luna) {
 
 $status = trim($_GET['status'] ?? '');
 $apartament_id = (int)($_GET['apartament_id'] ?? 0);
+$chirias_id = (int)($_GET['chirias_id'] ?? 0);
 $luna = trim($_GET['luna'] ?? '');
 $lunaDashboard = $luna !== '' ? $luna : date('Y-m');
 $chiriasApartamentId = 0;
+$canManageFacturi = is_admin() || is_proprietar();
 
 if (!in_array($status, ['', 'platita', 'neplatita'], true)) {
     $status = '';
@@ -41,48 +47,52 @@ if (is_chirias()) {
     $apartamente = mysqli_query($conn, "SELECT id, adresa FROM apartamente WHERE id = " . (int)$chiriasApartamentId);
 } else {
     $apartamente = mysqli_query($conn, "SELECT id, adresa FROM apartamente ORDER BY adresa ASC");
+    $chiriasi = mysqli_query($conn, "SELECT id, nume, prenume FROM chiriasi ORDER BY nume ASC, prenume ASC");
 }
 
 $totalIncasari = dashboard_total(
     $conn,
-    "SELECT COALESCE(SUM(suma), 0) AS total FROM facturi WHERE status = 'platita' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
+    "SELECT COALESCE(SUM(valoare_totala), 0) AS total FROM facturi WHERE status = 'platita' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
     $lunaDashboard
 );
 
 $venitChirie = dashboard_total(
     $conn,
-    "SELECT COALESCE(SUM(suma), 0) AS total FROM facturi WHERE status = 'platita' AND tip_factura = 'chirie' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
+    "SELECT COALESCE(SUM(valoare_chirie), 0) AS total FROM facturi WHERE status = 'platita' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
     $lunaDashboard
 );
 
 $cheltuieli = dashboard_total(
     $conn,
-    "SELECT COALESCE(SUM(suma), 0) AS total FROM facturi WHERE status = 'platita' AND tip_factura <> 'chirie' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
+    "SELECT COALESCE(SUM(cost_utilitati + cost_mentenanta), 0) AS total FROM facturi WHERE status = 'platita' AND DATE_FORMAT(data_platii, '%Y-%m') = ?",
     $lunaDashboard
 );
 
-$restanteResult = mysqli_query($conn, "SELECT COALESCE(SUM(suma), 0) AS total, COUNT(*) AS numar FROM facturi WHERE status = 'neplatita' AND scadenta < CURDATE()");
+$restanteResult = mysqli_query($conn, "SELECT COALESCE(SUM(valoare_totala), 0) AS total, COUNT(*) AS numar FROM facturi WHERE status = 'neplatita' AND scadenta < CURDATE()");
 $restante = mysqli_fetch_assoc($restanteResult);
 $profitLunar = $venitChirie - $cheltuieli;
 
 if (is_chirias()) {
-    $stmt = mysqli_prepare($conn, "SELECT f.*, a.adresa AS adresa_apartament
+    $stmt = mysqli_prepare($conn, "SELECT f.*, DATE_FORMAT(f.scadenta, '%Y-%m') AS luna_aferenta, a.adresa AS adresa_apartament, c.nume, c.prenume
                                    FROM facturi f
                                    LEFT JOIN apartamente a ON f.apartament_id = a.id
+                                   LEFT JOIN chiriasi c ON f.chirias_id = c.id
                                    WHERE f.apartament_id = ?
                                    AND (? = '' OR f.status = ?)
                                    AND (? = '' OR DATE_FORMAT(f.scadenta, '%Y-%m') = ?)
                                    ORDER BY f.scadenta ASC, f.id DESC");
     mysqli_stmt_bind_param($stmt, "issss", $chiriasApartamentId, $status, $status, $luna, $luna);
 } else {
-    $stmt = mysqli_prepare($conn, "SELECT f.*, a.adresa AS adresa_apartament
+    $stmt = mysqli_prepare($conn, "SELECT f.*, DATE_FORMAT(f.scadenta, '%Y-%m') AS luna_aferenta, a.adresa AS adresa_apartament, c.nume, c.prenume
                                    FROM facturi f
                                    LEFT JOIN apartamente a ON f.apartament_id = a.id
+                                   LEFT JOIN chiriasi c ON f.chirias_id = c.id
                                    WHERE (? = '' OR f.status = ?)
                                    AND (? = 0 OR f.apartament_id = ?)
+                                   AND (? = 0 OR f.chirias_id = ?)
                                    AND (? = '' OR DATE_FORMAT(f.scadenta, '%Y-%m') = ?)
                                    ORDER BY f.scadenta ASC, f.id DESC");
-    mysqli_stmt_bind_param($stmt, "ssiiss", $status, $status, $apartament_id, $apartament_id, $luna, $luna);
+    mysqli_stmt_bind_param($stmt, "ssiiiiss", $status, $status, $apartament_id, $apartament_id, $chirias_id, $chirias_id, $luna, $luna);
 }
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -94,7 +104,7 @@ $result = mysqli_stmt_get_result($stmt);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrare facturi</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <?php include "menu.php"; ?>
@@ -107,8 +117,8 @@ $result = mysqli_stmt_get_result($stmt);
             </div>
 
             <div class="header-actions">
-                <?php if (is_admin()) { ?>
-                    <a class="button button-primary" href="adauga_factura.php">Adaug&#259; factur&#259;</a>
+                <?php if ($canManageFacturi) { ?>
+                    <a class="button button-primary" href="adauga_factura.php">Genereaz&#259; factur&#259;</a>
                 <?php } ?>
             </div>
         </section>
@@ -157,13 +167,29 @@ $result = mysqli_stmt_get_result($stmt);
                 </label>
             <?php } ?>
 
+            <?php if (!is_chirias()) { ?>
+                <label>
+                    <span>Chiria&#537;</span>
+                    <select name="chirias_id">
+                        <option value="0">To&#539;i chiria&#537;ii</option>
+                        <?php if ($chiriasi && mysqli_num_rows($chiriasi) > 0) { ?>
+                            <?php while($chirias = mysqli_fetch_assoc($chiriasi)) { ?>
+                                <option value="<?php echo e($chirias['id']); ?>" <?php echo $chirias_id === (int)$chirias['id'] ? 'selected' : ''; ?>>
+                                    <?php echo e($chirias['nume'] . ' ' . $chirias['prenume']); ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
+                    </select>
+                </label>
+            <?php } ?>
+
             <label>
                 <span>Lun&#259;</span>
                 <input type="month" name="luna" value="<?php echo e($luna); ?>">
             </label>
 
             <button class="button button-secondary" type="submit">Filtreaz&#259;</button>
-            <?php if ($status !== '' || $apartament_id > 0 || $luna !== '') { ?>
+            <?php if ($status !== '' || $apartament_id > 0 || $chirias_id > 0 || $luna !== '') { ?>
                 <a class="button button-secondary" href="facturi.php">Reseteaz&#259;</a>
             <?php } ?>
         </form>
@@ -175,7 +201,13 @@ $result = mysqli_stmt_get_result($stmt);
                         <tr>
                             <th>Apartament</th>
                             <th>Tip factur&#259;</th>
-                            <th>Sum&#259;</th>
+                            <th>Chiria&#537;</th>
+                            <th>Luna aferent&#259;</th>
+                            <th>Chirie</th>
+                            <th>Utilit&#259;&#539;i</th>
+                            <th>Mentenan&#539;&#259;</th>
+                            <th>Total</th>
+                            <th>Emitere</th>
                             <th>Scaden&#539;&#259;</th>
                             <th>Status</th>
                             <th>Data pl&#259;&#539;ii</th>
@@ -189,8 +221,14 @@ $result = mysqli_stmt_get_result($stmt);
                             ?>
                             <tr>
                                 <td><?php echo e($row['adresa_apartament'] ?? 'Nesetat'); ?></td>
-                                <td><?php echo e(ucfirst($row['tip_factura'])); ?></td>
-                                <td><?php echo e(format_bani($row['suma'])); ?></td>
+                                <td><?php echo e(tip_factura_label($row['tip_factura'] ?? '-')); ?></td>
+                                <td><?php echo e(trim(($row['nume'] ?? '') . ' ' . ($row['prenume'] ?? '')) ?: 'Nesetat'); ?></td>
+                                <td><?php echo e($row['luna_aferenta']); ?></td>
+                                <td><?php echo e(format_bani($row['valoare_chirie'])); ?></td>
+                                <td><?php echo e(format_bani($row['cost_utilitati'])); ?></td>
+                                <td><?php echo e(format_bani($row['cost_mentenanta'])); ?></td>
+                                <td><?php echo e(format_bani($row['valoare_totala'])); ?></td>
+                                <td><?php echo e($row['data_emitere'] ?: '-'); ?></td>
                                 <td><?php echo e($row['scadenta']); ?></td>
                                 <td>
                                     <span class="status-pill <?php echo e($statusClass); ?>">
@@ -199,8 +237,10 @@ $result = mysqli_stmt_get_result($stmt);
                                 </td>
                                 <td><?php echo e($row['data_platii'] ?: '-'); ?></td>
                                 <td>
-                                    <?php if (is_admin()) { ?>
+                                    <?php if ($canManageFacturi) { ?>
                                         <div class="row-actions">
+                                            <a class="button button-secondary button-small" href="factura_detail.php?id=<?php echo e($row['id']); ?>">Vezi</a>
+                                            <a class="button button-secondary button-small" href="editeaza_factura.php?id=<?php echo e($row['id']); ?>">Editeaz&#259;</a>
                                             <?php if ($row['status'] === 'neplatita') { ?>
                                                 <a class="button button-secondary button-small" href="schimba_status_factura.php?id=<?php echo e($row['id']); ?>&status=platita">Pl&#259;te&#537;te</a>
                                             <?php } else { ?>
@@ -216,7 +256,7 @@ $result = mysqli_stmt_get_result($stmt);
                             <?php } ?>
                         <?php } else { ?>
                             <tr>
-                                <td class="empty-state" colspan="7">Nu exist&#259; facturi pentru filtrele alese.</td>
+                                <td class="empty-state" colspan="13">Nu exist&#259; facturi pentru filtrele alese.</td>
                             </tr>
                         <?php } ?>
                     </tbody>
